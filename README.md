@@ -37,7 +37,7 @@ Awesome-Dit-Cache
 
 **Maintainer**
 
-由 [@leeguandong](https://github.com/leeguandong) 维护，欢迎 issue / PR。如果你在做 cache 相关工作希望被收录，请提供：论文 arXiv、代码仓库、目标模型、加速比、范式归属（对照 §2 的 9 个子类）。
+由 [@leeguandong](https://github.com/leeguandong) 维护，欢迎 issue / PR。如果你在做 cache 相关工作希望被收录，请提供：论文 arXiv、代码仓库、目标模型、加速比、**两轴归属**（缓存粒度 §2 + 调度策略 §3）。
 
 ## 目录
 
@@ -45,22 +45,32 @@ Awesome-Dit-Cache
 - [1. 方法汇总](#1-方法汇总)
   - [1.1 方法全景表](#11-方法全景表)
   - [1.2 演化时间线](#12-演化时间线)
-- [2. 按范式详述](#2-按范式详述)
-  - [2.1 Static Caching（固定调度）](#21-static-caching固定调度)
-  - [2.2 Timestep-Adaptive（时步自适应）](#22-timestep-adaptive时步自适应)
-  - [2.3 Layer-Adaptive（深度自适应）](#23-layer-adaptive深度自适应)
-  - [2.4 Predictive / Cache-then-Forecast（预测类）](#24-predictive--cache-then-forecast预测类)
-  - [2.5 Token-Level / Granularity（细粒度）](#25-token-level--granularity细粒度)
-  - [2.6 Frequency-Aware（频域类）](#26-frequency-aware频域类)
-  - [2.7 CFG-Level Caching](#27-cfg-level-caching)
-  - [2.8 Video DiT Cache（视频专用）](#28-video-dit-cache视频专用)
-  - [2.9 Hybrid / Multi-Dimensional（混合类）](#29-hybrid--multi-dimensional混合类)
-- [3. 测评](#3-测评)
-  - [3.1 常用评测指标](#31-常用评测指标)
-  - [3.2 基线模型](#32-基线模型)
-  - [3.3 常用 Benchmark](#33-常用-benchmark)
-- [4. 工程与工具](#4-工程与工具)
-- [5. 相关综述](#5-相关综述)
+- [2. 按缓存粒度分类（What is cached）](#2-按缓存粒度分类what-is-cached)
+  - [2.1 Step Cache（整步输出）](#21-step-cache整步输出)
+  - [2.2 Block Cache（Transformer Block 输出）](#22-block-cachetransformer-block-输出)
+  - [2.3 Attention Cache（注意力模块）](#23-attention-cache注意力模块)
+  - [2.4 MLP / FFN Cache](#24-mlp--ffn-cache)
+  - [2.5 Token Cache（token 子集）](#25-token-cachetoken-子集)
+  - [2.6 Frequency-Band Cache（频带分解）](#26-frequency-band-cache频带分解)
+  - [2.7 CFG-Branch Cache](#27-cfg-branch-cache)
+  - [2.8 Residual Cache（层间残差）](#28-residual-cache层间残差)
+  - [2.9 缓存粒度 × 调度策略 交叉矩阵](#29-缓存粒度--调度策略-交叉矩阵)
+- [3. 按调度策略详述（How to decide）](#3-按调度策略详述how-to-decide)
+  - [3.1 Static Caching（固定调度）](#31-static-caching固定调度)
+  - [3.2 Timestep-Adaptive（时步自适应）](#32-timestep-adaptive时步自适应)
+  - [3.3 Layer-Adaptive（深度自适应）](#33-layer-adaptive深度自适应)
+  - [3.4 Predictive / Cache-then-Forecast（预测类）](#34-predictive--cache-then-forecast预测类)
+  - [3.5 Token-Level / Granularity（细粒度）](#35-token-level--granularity细粒度)
+  - [3.6 Frequency-Aware（频域类）](#36-frequency-aware频域类)
+  - [3.7 CFG-Level Caching](#37-cfg-level-caching)
+  - [3.8 Video DiT Cache（视频专用）](#38-video-dit-cache视频专用)
+  - [3.9 Hybrid / Multi-Dimensional（混合类）](#39-hybrid--multi-dimensional混合类)
+- [4. 测评](#4-测评)
+  - [4.1 常用评测指标](#41-常用评测指标)
+  - [4.2 基线模型](#42-基线模型)
+  - [4.3 常用 Benchmark](#43-常用-benchmark)
+- [5. 工程与工具](#5-工程与工具)
+- [6. 相关综述](#6-相关综述)
 - [Star History](#star-history)
 - [License](#license)
 
@@ -121,9 +131,124 @@ Awesome-Dit-Cache
 2026Q1  SeaCache / SpectralCache / LayerCache  (频谱演化 / 频域 hybrid / 层异质 + JVP)
 ```
 
-## 2. 按范式详述
+## 2. 按缓存粒度分类（What is cached）
 
-### 2.1 Static Caching（固定调度）
+本节从 **"到底在缓存什么对象"** 的角度做一次正交切分，和 §3 的 "调度策略" 配合使用。每个方法通常在一个主要粒度上做文章，少数混合方法会跨多个粒度（见 §2.9 矩阵）。
+
+### 2.1 Step Cache（整步输出）
+
+**缓存对象**：整个 transformer / UNet 在某个 timestep 的输出（或 residual）→ 下一步或下几步直接复用。这是最粗的粒度，也是最主流的做法。
+
+| 方法 | 缓存什么 | 复用方式 |
+|------|---------|----------|
+| **DeepCache** | UNet 深层 feature | 固定间隔复用 |
+| **TeaCache** | 整步 residual | 基于 timestep embedding 阈值决定复用 |
+| **FBCache** | 首个 block 的 residual 作触发，整步跳过 | 阈值触发 |
+| **TaylorSeer** | 历史多步的 step 输出 | Taylor 外推预测当前步 |
+| **MagCache** | 整步 residual | 几何衰减幅值律预测 |
+| **EasyCache** | transformation vector | runtime self-correct |
+| **FasterCache** | 整步 feature + CFG 分支 | 混合复用 |
+
+### 2.2 Block Cache（Transformer Block 输出）
+
+**缓存对象**：单个或连续几个 transformer block 的输出。介于 step 和 layer 之间的粒度。
+
+| 方法 | 缓存什么 |
+|------|---------|
+| **Δ-DiT** | 各 block 的 residual 增量 |
+| **DBCache** | 中段 block 群（Probe-Main-Corrector 三段划分）|
+| **BWCache** | 视频 DiT 的 block-wise 输出 |
+| **Skip-DiT** | 深层 block 的 long-skip 路径 |
+| **Cache Me if You Can** | 每个 block 独立阈值 |
+| **HarmoniCa** | block 级（learning-based 调度）|
+| **LayerCache** (本作) | 层组（Shallow/Middle/Deep）级输出 + JVP |
+
+### 2.3 Attention Cache（注意力模块）
+
+**缓存对象**：attention 的输出、attention map、或 KV。基于 "attention 冗余度比 MLP 更高" 的观察。
+
+| 方法 | 缓存什么 |
+|------|---------|
+| **T-GATE** | cross-attention 输出（收敛点后 freeze）|
+| **PAB** | self/cross/temporal attention 各自按类型广播 |
+| **FEB-Cache** (Attn 分支) | 后期阶段的 attention 输出（低频结构）|
+| **FasterCache** (attention 部分) | attention feature 跨步复用 |
+
+### 2.4 MLP / FFN Cache
+
+**缓存对象**：transformer 中 MLP / FFN 模块的输出。
+
+| 方法 | 缓存什么 |
+|------|---------|
+| **FEB-Cache** (MLP 分支) | 早期阶段的 MLP 输出（高频细节）|
+| **FORA** (MLP 部分) | MLP 在固定区间内复用 |
+
+### 2.5 Token Cache（token 子集）
+
+**缓存对象**：每个 block 内一部分 token 的激活，激活态 / 静态 token 区分处理。
+
+| 方法 | 缓存什么 |
+|------|---------|
+| **ToCa** | 低敏感度 token 的每层激活 |
+| **DuCa** | token × layer 双层 |
+| **FastCache** | 静态 token 用学习的线性近似映射 |
+| **Chipmunk** | 低贡献 activation 的 column-sparse cache |
+
+### 2.6 Frequency-Band Cache（频带分解）
+
+**缓存对象**：对特征做频域分解后的低频 / 高频分量，分别缓存。
+
+| 方法 | 缓存什么 |
+|------|---------|
+| **FEB-Cache** | Attn 偏低频 / MLP 偏高频，分阶段切换对象 |
+| **FreqCa** | 低频 reuse + 高频用二阶 Hermite 外推，CRF 残差降内存 99% |
+| **SeaCache** | 跟踪频谱演化触发刷新 |
+| **SpectralCache** (本作) | 低频 γ=0.8 严 / 高频 γ=1.5 松 的非对称阈值 |
+
+### 2.7 CFG-Branch Cache
+
+**缓存对象**：Classifier-Free Guidance 中 unconditional / conditional 分支的输出。
+
+| 方法 | 缓存什么 |
+|------|---------|
+| **CFG-Cache** (FasterCache 子模块) | uncond 分支跨步复用 |
+| **FasterCache** (CFG 频域分解) | 把 CFG 差异按频域分开缓存 |
+
+### 2.8 Residual Cache（层间残差）
+
+**缓存对象**：层与层之间的残差、或速度场的导数估计。
+
+| 方法 | 缓存什么 |
+|------|---------|
+| **Δ-DiT** | block 级 residual 增量 |
+| **Chipmunk** | activation 级 residual |
+| **LayerCache** (本作) | JVP（Jacobian-Vector Product）形式的速度残差，用 MeanFlow Identity 外推 |
+| **AB-Cache / FoCa / HiCache** | 把 cache 看作 ODE 数值积分的状态量 |
+
+### 2.9 缓存粒度 × 调度策略 交叉矩阵
+
+列 = §3 的调度策略；行 = §2 的缓存粒度。◆ = 主要归属，○ = 次要命中。
+
+| 粒度 \ 策略 | Static | Timestep-Adaptive | Layer-Adaptive | Predictive | Token-Level | Frequency-Aware | CFG | Hybrid |
+|-------------|:---:|:---:|:---:|:---:|:---:|:---:|:---:|:---:|
+| **Step Cache**       | DeepCache / FORA ◆ | TeaCache / FBCache / MagCache / EasyCache ◆ | — | TaylorSeer / HiCache / AB-Cache / FoCa ◆ | — | — | — | FasterCache ○ |
+| **Block Cache**      | Δ-DiT ◆ | Cache Me if You Can ◆ | DBCache / Skip-DiT / HarmoniCa / **LayerCache** ◆ | — | — | — | — | BWCache ○ |
+| **Attention Cache**  | T-GATE ◆ | — | — | — | — | FEB-Cache (Attn) ○ | — | PAB ◆ / FasterCache ○ |
+| **MLP Cache**        | FORA (MLP) ◆ | — | — | — | — | FEB-Cache (MLP) ◆ | — | — |
+| **Token Cache**      | — | Chipmunk ◆ | — | — | ToCa / DuCa / FastCache ◆ | — | — | — |
+| **Frequency Band**   | — | — | — | FreqCa (高频预测) ○ | — | FreqCa / SeaCache / FEB-Cache / **SpectralCache** ◆ | — | **SpectralCache** ○ |
+| **CFG Branch**       | — | — | — | — | — | FasterCache (CFG+freq) ○ | CFG-Cache ◆ | — |
+| **Residual**         | Δ-DiT ◆ | Chipmunk ○ | **LayerCache** (JVP) ◆ | AB-Cache / FoCa / HiCache ◆ | — | — | — | — |
+
+> **怎么读这张表**：
+> - 横向看：一个调度策略下都有哪些缓存粒度的代表。
+> - 纵向看：同一粒度下不同调度思路的演化。
+> - **LayerCache** 同时命中 *Block / Residual* 粒度 + *Layer-Adaptive / Predictive* 策略（所以在 Hybrid 意义上是"层粒度 + 预测"）。
+> - **SpectralCache** 同时命中 *Frequency Band* 粒度 + *Frequency-Aware / Hybrid* 策略。
+
+## 3. 按调度策略详述（How to decide）
+
+### 3.1 Static Caching（固定调度）
 
 固定复用区间 / 固定层集合，**无运行时决策**。
 
@@ -153,7 +278,7 @@ Awesome-Dit-Cache
   * 论文：[ICLR 2025 / arXiv 2408.12588](https://arxiv.org/abs/2408.12588)
   * 简介：视频 DiT 的 attention 差分呈 U 形，空间 / 时间 / cross attention 稳定性不同。PAB 按注意力类型设置不同广播半径（金字塔式），在 Open-Sora / Latte / Open-Sora-Plan 上达到 21.6 FPS 实时生成，10.6× 加速。
 
-### 2.2 Timestep-Adaptive（时步自适应）
+### 3.2 Timestep-Adaptive（时步自适应）
 
 通过阈值 / 相似度 / 误差预算决定**当前步是否重算**，是 DiT cache 的主流。
 
@@ -187,7 +312,7 @@ Awesome-Dit-Cache
   * 论文：[CVPR 2024 / arXiv 2312.03209](https://arxiv.org/abs/2312.03209)
   * 简介：每个 block 有独立阈值，相对变化超阈值才刷新，早期的 block-wise 阈值工作。
 
-### 2.3 Layer-Adaptive（深度自适应）
+### 3.3 Layer-Adaptive（深度自适应）
 
 在**层深度维度**决定哪些层算 / 哪些层缓存，代表了"不同层对 cache 敏感度不同"的洞察。
 
@@ -211,7 +336,7 @@ Awesome-Dit-Cache
   * 地址：https://github.com/UnicomAI/LayerCache
   * 简介：发现 flow matching 模型中 transformer 的**层组速度异质性**——Shallow / Middle / Deep 有不同的稳定度：浅层稳定可激进缓存（98%），中层中等（52%），深层高度易变（0% 缓存）。提出 **3D schedule (timestep × layer group × JVP span K)** + greedy budget allocation + JVP-based forecasting。在 Qwen-Image 上 1.71× 加速，PSNR 34.16，显著优于 MeanCache baseline。
 
-### 2.4 Predictive / Cache-then-Forecast（预测类）
+### 3.4 Predictive / Cache-then-Forecast（预测类）
 
 把 cache 升级为**数值积分 / 多项式外推**：用历史 step 的特征预测未来 step。
 
@@ -230,7 +355,7 @@ Awesome-Dit-Cache
 * **AB-Cache**：
   * 简介：**Adams-Bashforth** 多步法，解释了 U 形相似度现象的数学根源——相邻 step 输出之间的线性关系。
 
-### 2.5 Token-Level / Granularity（细粒度）
+### 3.5 Token-Level / Granularity（细粒度）
 
 在 **token 维度**决定哪些 token 激活 / 哪些 token 用旧值。
 
@@ -251,7 +376,7 @@ Awesome-Dit-Cache
   * 论文：[arXiv 2508.17356](https://arxiv.org/abs/2508.17356)
   * 简介：**让模型自己决定 cache**——用 shallow feature 作为 probe，基于变化触发重算。
 
-### 2.6 Frequency-Aware（频域类）
+### 3.6 Frequency-Aware（频域类）
 
 在**频率维度**区分高低频特征的不同时序行为。
 
@@ -276,7 +401,7 @@ Awesome-Dit-Cache
     - **FDC** (Frequency-Decomposed Caching)：高低频带**非对称阈值**（低频严 γ=0.8 / 高频松 γ=1.5）
   * 在 FLUX.1-schnell 上 **2.46× 加速**，比 TeaCache 快 16%。
 
-### 2.7 CFG-Level Caching
+### 3.7 CFG-Level Caching
 
 针对 **CFG 分支**（conditional / unconditional）的冗余做缓存。
 
@@ -287,22 +412,22 @@ Awesome-Dit-Cache
   * 论文：[ICLR 2025 / arXiv 2410.19355](https://arxiv.org/abs/2410.19355)
   * 简介：把 CFG 差异分解为高低频两部分，分开做 cache 决策。
 
-### 2.8 Video DiT Cache（视频专用）
+### 3.8 Video DiT Cache（视频专用）
 
 视频 DiT 具有额外的时间维度冗余，往往配合更激进的 cache 策略。
 
-* **PAB** → 见 2.1
-* **FasterCache** → 见 2.9
-* **AdaCache** → 见 2.3
+* **PAB** → 见 3.1
+* **FasterCache** → 见 3.9
+* **AdaCache** → 见 3.3
 * **MixCache** (Mixture-of-Cache)：
   * 论文：[arXiv 2508.12691](https://arxiv.org/abs/2508.12691)
   * 简介：多个 cache 策略组成 mixture，router 动态选择。
 * **BWCache** (Block-Wise Cache)：
   * 论文：[arXiv 2509.13789](https://arxiv.org/abs/2509.13789)
   * 简介：视频 DiT 的 block-wise 缓存。
-* **EasyCache** → 见 2.2
+* **EasyCache** → 见 3.2
 
-### 2.9 Hybrid / Multi-Dimensional（混合类）
+### 3.9 Hybrid / Multi-Dimensional（混合类）
 
 组合多个轴（time × layer × frequency × CFG × token）的混合方法。
 
@@ -310,12 +435,12 @@ Awesome-Dit-Cache
   * 地址：https://github.com/Vchitect/FasterCache ![](https://img.shields.io/github/stars/Vchitect/FasterCache.svg)
   * 论文：[ICLR 2025 / arXiv 2410.19355](https://arxiv.org/abs/2410.19355)
   * 简介：Feature × CFG × Frequency 三轴融合，Vchitect-2.0 上 1.67×。
-* **SpectralCache** → 见 2.6
-* **LayerCache** → 见 2.3（Layer + Predictive 两轴）
+* **SpectralCache** → 见 3.6
+* **LayerCache** → 见 3.3（Layer + Predictive 两轴）
 
-## 3. 测评
+## 4. 测评
 
-### 3.1 常用评测指标
+### 4.1 常用评测指标
 
 | 类别 | 指标 | 含义 |
 |------|------|------|
@@ -329,13 +454,13 @@ Awesome-Dit-Cache
 | 视频时序 | **VBench** | 视频质量多维度评测 |
 | 视频时序 | **Temporal Flickering / Motion Smoothness** | 时序连贯性 |
 
-### 3.2 基线模型
+### 4.2 基线模型
 
 **图像**：SD 1.5 / SDXL / PixArt-α / PixArt-Σ / FLUX.1-dev / FLUX.1-schnell / SD3 / Qwen-Image / Z-Image / LongCat-Image
 
 **视频**：Open-Sora / Open-Sora-Plan / Latte / CogVideoX / HunyuanVideo / Wan2.1 / Wan2.2 / Mochi / Vchitect-2.0
 
-### 3.3 常用 Benchmark
+### 4.3 常用 Benchmark
 
 | Benchmark | 用途 | 链接 |
 |-----------|------|------|
@@ -346,7 +471,7 @@ Awesome-Dit-Cache
 | **VBench** | 视频生成 16 维度评测 | [Vchitect/VBench](https://github.com/Vchitect/VBench) |
 | **OneIG-Bench** | 统一图像生成评测 | - |
 
-## 4. 工程与工具
+## 5. 工程与工具
 
 | 工具 | 说明 |
 |------|------|
@@ -356,7 +481,7 @@ Awesome-Dit-Cache
 | **vLLM-Omni Diffusion Cache** | vLLM 引入的 diffusion cache 工程化实现 |
 | **TensorRT-LLM / TensorRT** | cache + low-precision 联合部署 |
 
-## 5. 相关综述
+## 6. 相关综述
 
 * **A Survey on Cache Methods in Diffusion Models: Toward Efficient Multi-Modal Generation** ([arXiv 2510.19755](https://arxiv.org/abs/2510.19755)) — 2025 年 10 月，目前最全最新的 cache 综述，将方法分为 static / timestep-adaptive / layer-adaptive / predictive / hybrid 五大类。
 * **Efficient Diffusion Models: A Comprehensive Survey** — 覆盖量化、蒸馏、cache、并行等全方向加速。
