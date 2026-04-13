@@ -18,8 +18,30 @@ Awesome-Dit-Cache
 
 同时也欢迎大家贡献本项目未收录的论文、开源实现。提供新的仓库信息请发起 PR，并按照本项目的格式提供仓库链接、arXiv 编号、会议、简介等信息，感谢～
 
+## About
+
+**Why this repo / 为什么做这个仓库**
+
+过去两年里，Diffusion / DiT 推理加速领域的 Cache 类方法井喷式出现——从 2023 年 DeepCache 把"特征复用"第一次系统化，到 2025 年 TaylorSeer、HiCache、FoCa 把它升级成"数值积分式预测"，再到 2026 年 SeaCache / SpectralCache / LayerCache 把频域、层深度、JVP 前向一并拉进调度框架，方法演化已经跨越了 **"复用 → 调度 → 预测 → 多轴混合"** 四个阶段。但这个方向缺少一个**统一的中文索引**：论文分散在 CVPR / ICLR / ICCV / NeurIPS / arXiv，Video DiT 与 Image DiT 的工作被割裂收录，新老 baseline 对比困难。
+
+这个仓库就是为了填这个缺口：
+- **以"调度粒度"为主轴**（Static → Timestep → Layer → Predictive → Token → Frequency → CFG → Hybrid），把 2023–2026 的代表性方法一次性摆到同一张表里。
+- **双语**介绍，论文 + arXiv + 代码链接齐全，方便检索与追溯。
+- **覆盖范围** = Image DiT（FLUX / SD3 / PixArt / Qwen-Image）+ Video DiT（CogVideoX / HunyuanVideo / Wan / Open-Sora）+ Flow Matching，不只是狭义的 image 场景。
+- 顺带记录两个本人主导的工作作为对应范式的代表：**SpectralCache**（频域 × 时步 × 误差预算的 Hybrid 代表）与 **LayerCache**（CVPR 2026，层异质速度 + JVP 预测）。
+
+**Scope / 收录边界**
+
+✅ 收录：training-free 特征缓存、激活复用、时步/层/token/频域/CFG 维度的复用策略、预测式缓存（Taylor/Hermite/ODE 数值法）、视频 DiT cache。
+❌ 暂不收录：量化（FP8/INT8）、蒸馏（step distillation / consistency models）、注意力内核优化（SageAttn、FlashAttn）、并行推理（xDiT / USP） —— 这些虽然常与 cache 叠加使用，但各自有独立的加速机理，另起仓库更合适。
+
+**Maintainer**
+
+由 [@leeguandong](https://github.com/leeguandong) 维护，欢迎 issue / PR。如果你在做 cache 相关工作希望被收录，请提供：论文 arXiv、代码仓库、目标模型、加速比、范式归属（对照 §2 的 9 个子类）。
+
 ## 目录
 
+- [About](#about)
 - [1. 方法汇总](#1-方法汇总)
   - [1.1 方法全景表](#11-方法全景表)
   - [1.2 演化时间线](#12-演化时间线)
