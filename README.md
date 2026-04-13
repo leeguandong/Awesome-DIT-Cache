@@ -77,8 +77,8 @@ Awesome-Dit-Cache
 | **FEB-Cache** | 2025 | DiT | Frequency (Attn/MLP 分频) | ~2.0× | [2503.07120](https://arxiv.org/abs/2503.07120) | - |
 | **FreqCa** | 2025 | DiT | Frequency (低频复用+高频预测) | ~7.14× | [2510.08669](https://arxiv.org/abs/2510.08669) | - |
 | **SeaCache** | CVPR 2026 | DiT | Spectral-Evolution-Aware | ~2.5× | - | [jiwoogit/SeaCache](https://github.com/jiwoogit/SeaCache) |
-| **🔥 SpectralCache** (本作) | 2026 | DiT (FLUX/PixArt) | Hybrid (TADS×CEB×FDC) | **2.46×** | Coming soon | [leeguandong/SpectralCache](https://github.com/leeguandong/SpectralCache) |
-| **🔥 LayerCache** (本作) | CVPR 2026 | Flow Matching (Qwen-Image/FLUX) | Layer-Adaptive + JVP | **1.71×** | Coming soon | [UnicomAI/LayerCache](https://github.com/UnicomAI/LayerCache) |
+| **🔥 SpectralCache** | 2026 | DiT (FLUX/PixArt) | Hybrid (TADS×CEB×FDC) | **2.46×** | Coming soon | [leeguandong/SpectralCache](https://github.com/leeguandong/SpectralCache) |
+| **🔥 LayerCache** | 2026 | Flow Matching (Qwen-Image/FLUX) | Layer-Adaptive + JVP | **1.71×** | Coming soon | [leeguandong/LayerCache](https://github.com/leeguandong/LayerCache) |
 | **MixCache** | 2025 | Video DiT | Mixture-of-Cache | ~2.2× | [2508.12691](https://arxiv.org/abs/2508.12691) | - |
 | **BWCache** | 2025 | Video DiT | Block-Wise | ~2.0× | [2509.13789](https://arxiv.org/abs/2509.13789) | - |
 
