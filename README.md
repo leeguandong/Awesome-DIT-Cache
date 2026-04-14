@@ -28,7 +28,6 @@ Awesome-Dit-Cache
 - **以"调度粒度"为主轴**（Static → Timestep → Layer → Predictive → Token → Frequency → CFG → Hybrid），把 2023–2026 的代表性方法一次性摆到同一张表里。
 - **双语**介绍，论文 + arXiv + 代码链接齐全，方便检索与追溯。
 - **覆盖范围** = Image DiT（FLUX / SD3 / PixArt / Qwen-Image）+ Video DiT（CogVideoX / HunyuanVideo / Wan / Open-Sora）+ Flow Matching，不只是狭义的 image 场景。
-- 顺带记录两个本人主导的工作作为对应范式的代表：**SpectralCache**（频域 × 时步 × 误差预算的 Hybrid 代表）与 **LayerCache**（CVPR 2026，层异质速度 + JVP 预测）。
 
 **Scope / 收录边界**
 
