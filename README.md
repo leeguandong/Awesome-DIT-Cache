@@ -80,54 +80,60 @@ Awesome-Dit-Cache
 | 方法 | 会议/年 | 目标模型 | 范式 | 典型加速 | arXiv | 代码 |
 |------|--------|---------|------|---------|-------|------|
 | **DeepCache** | CVPR 2024 | UNet (SD 1.5/2.x) | Static + 时步 | ~2.3× | [2312.00858](https://arxiv.org/abs/2312.00858) | [horseee/DeepCache](https://github.com/horseee/DeepCache) |
-| **FasterDiffusion** | NeurIPS 2024 | UNet | Static (encoder skip) | ~1.8× | - | - |
+| **FasterDiffusion** | NeurIPS 2024 | UNet | Static (encoder skip) | ~1.8× | [2312.09608](https://arxiv.org/abs/2312.09608) | [hutaiHang/Faster-Diffusion](https://github.com/hutaiHang/Faster-Diffusion) |
 | **T-GATE V1/V2** | 2024 | SD / PixArt / LCM | 阶段式 (cross-attn freeze) | ~1.5× | [2404.02747](https://arxiv.org/abs/2404.02747) | [HaozheLiu-ST/T-GATE](https://github.com/HaozheLiu-ST/T-GATE) |
 | **FORA** | 2024 | DiT | Static 固定区间 | ~1.8× | [2407.01425](https://arxiv.org/abs/2407.01425) | - |
 | **Δ-DiT** | 2024 | DiT | Static (residual cache) | ~1.6× | [2406.01125](https://arxiv.org/abs/2406.01125) | - |
 | **Block Cache / Cache Me if You Can** | CVPR 2024 | UNet | Layer-Adaptive 阈值 | ~1.8× | [2312.03209](https://arxiv.org/abs/2312.03209) | - |
+| **BlockDance** | CVPR 2025 | DiT / Video DiT | Block-level (STSS block) + 时步 | 1.25–1.50× | [2503.15927](https://arxiv.org/abs/2503.15927) | - |
 | **PAB** (Pyramid Attention Broadcast) | ICLR 2025 | Video DiT (Open-Sora/Latte) | Static × attention 类型 | ~10.6× FPS | [2408.12588](https://arxiv.org/abs/2408.12588) | [NUS-HPC-AI-Lab/VideoSys](https://github.com/NUS-HPC-AI-Lab/VideoSys) |
 | **FasterCache** | ICLR 2025 | Video DiT | Hybrid (feature + CFG) | ~1.67× | [2410.19355](https://arxiv.org/abs/2410.19355) | [Vchitect/FasterCache](https://github.com/Vchitect/FasterCache) |
 | **AdaCache** | 2024 | Video DiT | Layer-Adaptive (per-video) | ~4.49× | [2411.02397](https://arxiv.org/abs/2411.02397) | [adacache-dit](https://adacache-dit.github.io/) |
+| **ProfilingDiT** | ICCV 2025 | Video DiT (Wan2.1) | Block profiling (FG/BG 解耦) | ~2.01× | [2504.03140](https://arxiv.org/abs/2504.03140) | [GeekGuru123/ProfilingDiT](https://github.com/GeekGuru123/ProfilingDiT) |
 | **TeaCache** | CVPR 2025 | DiT / Video DiT | Timestep-Adaptive (阈值) | ~2.1× | [2411.19108](https://arxiv.org/abs/2411.19108) | [ali-vilab/TeaCache](https://github.com/ali-vilab/TeaCache) |
 | **FBCache** (First-Block Cache) | 2024 | DiT | Timestep-Adaptive (首层触发) | ~1.87× | - | [chengzeyi/ParaAttention](https://github.com/chengzeyi/ParaAttention) |
-| **HarmoniCa** | 2024 | UNet | Layer-Adaptive (learning) | ~1.7× | [2410.01723](https://arxiv.org/abs/2410.01723) | - |
+| **HarmoniCa** | 2024 | UNet | Layer-Adaptive (learning) | ~1.7× | [2410.01723](https://arxiv.org/abs/2410.01723) | [ModelTC/HarmoniCa](https://github.com/ModelTC/HarmoniCa) |
 | **MagCache** | 2025 | DiT | Timestep (幅值定律) | ~2.0× | [2506.09045](https://arxiv.org/abs/2506.09045) | [Zehong-Ma/MagCache](https://github.com/Zehong-Ma/MagCache) |
-| **EasyCache** | ICCV 2025 | Video DiT | Timestep (runtime self-correct) | 2.1–3.3× | [2507.02860](https://arxiv.org/abs/2507.02860) | - |
-| **LazyDiT** | AAAI 2025 | DiT | Timestep (learned skip) | ~1.9× | [2412.12444](https://arxiv.org/abs/2412.12444) | - |
-| **Chipmunk** | 2025 | DiT | Timestep (稀疏增量) | ~2.5× | [2506.03275](https://arxiv.org/abs/2506.03275) | - |
+| **EasyCache** | ICCV 2025 | Video DiT | Timestep (runtime self-correct) | 2.1–3.3× | [2507.02860](https://arxiv.org/abs/2507.02860) | [H-EmbodVis/EasyCache](https://github.com/H-EmbodVis/EasyCache) |
+| **LazyDiT** | AAAI 2025 | DiT | Timestep (learned skip) | ~1.9× | [2412.12444](https://arxiv.org/abs/2412.12444) | [shawnricecake/lazydit](https://github.com/shawnricecake/lazydit) |
+| **Chipmunk** | 2025 | DiT | Timestep (稀疏增量) | ~2.5× | [2506.03275](https://arxiv.org/abs/2506.03275) | [sandyresearch/chipmunk](https://github.com/sandyresearch/chipmunk) |
 | **ToCa** | ICLR 2025 | DiT | Token-Level | ~1.5× | [2410.05317](https://arxiv.org/abs/2410.05317) | [Shenyi-Z/ToCa](https://github.com/Shenyi-Z/ToCa) |
-| **DuCa** (Dual Feature Cache) | 2024 | DiT | Token × Layer 双层 | ~1.9× | [2412.18911](https://arxiv.org/abs/2412.18911) | - |
-| **FastCache** | 2025 | DiT | Token 线性近似 | ~4.5× | [2505.20353](https://arxiv.org/abs/2505.20353) | - |
-| **DiCache** | 2025 | DiT | shallow probe 自触发 | ~2.3× | [2508.17356](https://arxiv.org/abs/2508.17356) | - |
-| **DBCache** | 2025 | DiT | Probe-Decide-Correct | ~2.0× | - | - |
-| **Skip-DiT** | ICCV 2025 | DiT | Long-Skip-Connection + cache | 1.5–2× | [2411.17616](https://arxiv.org/abs/2411.17616) | - |
+| **DuCa** (Dual Feature Cache) | 2024 | DiT | Token × Layer 双层 | ~1.9× | [2412.18911](https://arxiv.org/abs/2412.18911) | [Shenyi-Z/DuCa](https://github.com/Shenyi-Z/DuCa) |
+| **FastCache** | 2025 | DiT | Token 线性近似 | ~4.5× | [2505.20353](https://arxiv.org/abs/2505.20353) | [NoakLiu/FastCache-xDiT](https://github.com/NoakLiu/FastCache-xDiT) |
+| **DiCache** | 2025 | DiT | shallow probe 自触发 | ~2.3× | [2508.17356](https://arxiv.org/abs/2508.17356) | [Bujiazi/DiCache](https://github.com/Bujiazi/DiCache) |
+| **ClusCa** | ACM MM 2025 | DiT (FLUX/HunyuanVideo) | Token Cluster (KMeans 簇内传播) | **4.96× FLUX** | [2509.10312](https://arxiv.org/abs/2509.10312) | - |
+| **DBCache** | 2025 | DiT | Probe-Decide-Correct | ~2.0× | - | [vipshop/cache-dit](https://github.com/vipshop/cache-dit) |
+| **Skip-DiT** | ICCV 2025 | DiT | Long-Skip-Connection + cache | 1.5–2× | [2411.17616](https://arxiv.org/abs/2411.17616) | [OpenSparseLLMs/Skip-DiT](https://github.com/OpenSparseLLMs/Skip-DiT) |
 | **TaylorSeer** | ICCV 2025 | DiT | Predictive (Taylor) | ~2.4× | [2503.06923](https://arxiv.org/abs/2503.06923) | [Shenyi-Z/TaylorSeer](https://github.com/Shenyi-Z/TaylorSeer) |
-| **HiCache** | 2025 | DiT | Predictive (Hermite) | ~2.6× | [2508.16984](https://arxiv.org/abs/2508.16984) | - |
-| **FoCa** | 2025 | DiT | Predictive (BDF2+Heun) | ~2.5× | - | - |
-| **AB-Cache** | 2025 | DiT | Predictive (Adams-Bashforth) | ~2.3× | - | - |
-| **FEB-Cache** | 2025 | DiT | Frequency (Attn/MLP 分频) | ~2.0× | [2503.07120](https://arxiv.org/abs/2503.07120) | - |
+| **HiCache** | 2025 | DiT | Predictive (Hermite) | ~2.6× | [2508.16984](https://arxiv.org/abs/2508.16984) | [fenglang918/HiCache](https://github.com/fenglang918/HiCache) |
+| **FoCa** | 2025 | DiT / Video DiT | Predictive (Feature-ODE) | **5.50× FLUX** | [2508.16211](https://arxiv.org/abs/2508.16211) | - |
+| **AB-Cache** | 2025 | DiT / Video DiT | Predictive (Adams-Bashforth) | ~3× | [2504.10540](https://arxiv.org/abs/2504.10540) | - |
+| **SpeCa** | ACM MM 2025 | DiT (FLUX/HunyuanVideo) | Predictive (Forecast-then-Verify) | **6.34× FLUX** | [2509.11628](https://arxiv.org/abs/2509.11628) | - |
+| **HyCa** | 2025 | DiT (FLUX/HunyuanVideo/Qwen-Image) | Predictive (per-dim ODE mixture) | **5.55× FLUX** | [2510.04188](https://arxiv.org/abs/2510.04188) | - |
+| **FEB-Cache** | 2025 | DiT | Frequency (Attn/MLP 分频) | ~2.0× | [2503.07120](https://arxiv.org/abs/2503.07120) | [aSleepyTree/EB-Cache](https://github.com/aSleepyTree/EB-Cache) |
 | **FreqCa** | 2025 | DiT | Frequency (低频复用+高频预测) | ~7.14× | [2510.08669](https://arxiv.org/abs/2510.08669) | - |
 | **SeaCache** | CVPR 2026 | DiT | Spectral-Evolution-Aware | ~2.5× | - | [jiwoogit/SeaCache](https://github.com/jiwoogit/SeaCache) |
 | **🔥 SpectralCache** | 2026 | DiT (FLUX/PixArt) | Hybrid (TADS×CEB×FDC) | **2.46×** | Coming soon | [leeguandong/SpectralCache](https://github.com/leeguandong/SpectralCache) |
 | **🔥 LayerCache** | 2026 | Flow Matching (Qwen-Image/FLUX) | Layer-Adaptive + JVP | **1.71×** | Coming soon | [leeguandong/LayerCache](https://github.com/leeguandong/LayerCache) |
 | **MixCache** | 2025 | Video DiT | Mixture-of-Cache | ~2.2× | [2508.12691](https://arxiv.org/abs/2508.12691) | - |
-| **BWCache** | 2025 | Video DiT | Block-Wise | ~2.0× | [2509.13789](https://arxiv.org/abs/2509.13789) | - |
+| **BWCache** | 2025 | Video DiT | Block-Wise | ~2.0× | [2509.13789](https://arxiv.org/abs/2509.13789) | [hsc113/BWCache](https://github.com/hsc113/BWCache) |
+| **ERTACache** | ICLR 2026 | DiT / Video DiT (Wan2.1) | Timestep-Adaptive + 残差矫正 | ~2.0× | [2508.21091](https://arxiv.org/abs/2508.21091) | [bytedance/ERTACache](https://github.com/bytedance/ERTACache) |
 
 > 备注：加速比对应各自论文的最佳无损/近无损配置，数值来自原论文的 FLUX、SD3、PixArt、CogVideoX、Open-Sora 等主流 backbone。
 
 ### 1.2 演化时间线
 
 ```
-2023Q4  DeepCache                      (UNet feature 复用开创)
-2024Q1  T-GATE                          (cross-attn freeze)
-2024Q2  FORA / Δ-DiT                    (UNet cache 思路迁移到 DiT)
-2024Q3  PAB                             (视频 DiT 金字塔广播)
-2024Q4  TeaCache / ToCa / HarmoniCa    (timestep 阈值 / token 级 / learning)
-2025Q1  TaylorSeer                     (Cache-then-Forecast 开创)
-2025Q2  MagCache / Chipmunk / LazyDiT  (幅值定律 / 稀疏增量 / learned skip)
-2025Q3  HiCache / FoCa / AB-Cache      (Hermite / ODE 数值积分)
-2025Q4  FreqCa / FEB-Cache / DiCache   (频域 / 自触发)
-2026Q1  SeaCache / SpectralCache / LayerCache  (频谱演化 / 频域 hybrid / 层异质 + JVP)
+2023Q4  DeepCache                                                   (UNet feature 复用开创)
+2024Q1  T-GATE                                                       (cross-attn freeze)
+2024Q2  FORA / Δ-DiT                                                 (UNet cache 思路迁移到 DiT)
+2024Q3  PAB                                                          (视频 DiT 金字塔广播)
+2024Q4  TeaCache / ToCa / HarmoniCa                                  (timestep 阈值 / token 级 / learning)
+2025Q1  TaylorSeer / BlockDance                                      (Cache-then-Forecast 开创 / STSS block)
+2025Q2  MagCache / Chipmunk / LazyDiT / ProfilingDiT / AB-Cache     (幅值律 / 稀疏增量 / learned skip / FG-BG profile / Adams-Bashforth)
+2025Q3  HiCache / FoCa / ClusCa / SpeCa / ERTACache                 (Hermite / Feature-ODE / token cluster / speculate-verify / 残差矫正)
+2025Q4  FreqCa / FEB-Cache / DiCache / HyCa                         (频域 / 自触发 / per-dim ODE mixture)
+2026Q1  SeaCache / SpectralCache / LayerCache                       (频谱演化 / 频域 hybrid / 层异质 + JVP)
 ```
 
 ## 2. 按缓存粒度分类（What is cached）
@@ -147,6 +153,8 @@ Awesome-Dit-Cache
 | **MagCache** | 整步 residual | 几何衰减幅值律预测 |
 | **EasyCache** | transformation vector | runtime self-correct |
 | **FasterCache** | 整步 feature + CFG 分支 | 混合复用 |
+| **SpeCa** | 未来 step 的 feature 预测值 | 投机预测 + parameter-free 验证器接受/拒绝 |
+| **ERTACache** | 整步 residual 输出 | 可复用步离线 profile + 时步调整 + 闭式残差矫正 |
 
 ### 2.2 Block Cache（Transformer Block 输出）
 
@@ -161,6 +169,8 @@ Awesome-Dit-Cache
 | **Cache Me if You Can** | 每个 block 独立阈值 |
 | **HarmoniCa** | block 级（learning-based 调度）|
 | **LayerCache** (本作) | 层组（Shallow/Middle/Deep）级输出 + JVP |
+| **BlockDance** | 结构焦点块在去噪后期的 STSS 特征 |
+| **ProfilingDiT** | 前景/背景倾向的 block 分组,背景块可 cache |
 
 ### 2.3 Attention Cache（注意力模块）
 
@@ -192,6 +202,7 @@ Awesome-Dit-Cache
 | **DuCa** | token × layer 双层 |
 | **FastCache** | 静态 token 用学习的线性近似映射 |
 | **Chipmunk** | 低贡献 activation 的 column-sparse cache |
+| **ClusCa** | KMeans 对 token 聚类,每簇仅算 1 个 token,簇内传播 |
 
 ### 2.6 Frequency-Band Cache（频带分解）
 
@@ -223,6 +234,8 @@ Awesome-Dit-Cache
 | **Chipmunk** | activation 级 residual |
 | **LayerCache** (本作) | JVP（Jacobian-Vector Product）形式的速度残差，用 MeanFlow Identity 外推 |
 | **AB-Cache / FoCa / HiCache** | 把 cache 看作 ODE 数值积分的状态量 |
+| **HyCa** | 按 feature 维度拆 ODE,每维自选解算器 |
+| **ERTACache** | 显式拆分 "feature shift + step amplification" 两类误差,解析闭式矫正 |
 
 ### 2.9 缓存粒度 × 调度策略 交叉矩阵
 
@@ -230,14 +243,14 @@ Awesome-Dit-Cache
 
 | 粒度 \ 策略 | Static | Timestep-Adaptive | Layer-Adaptive | Predictive | Token-Level | Frequency-Aware | CFG | Hybrid |
 |-------------|:---:|:---:|:---:|:---:|:---:|:---:|:---:|:---:|
-| **Step Cache**       | DeepCache / FORA ◆ | TeaCache / FBCache / MagCache / EasyCache ◆ | — | TaylorSeer / HiCache / AB-Cache / FoCa ◆ | — | — | — | FasterCache ○ |
-| **Block Cache**      | Δ-DiT ◆ | Cache Me if You Can ◆ | DBCache / Skip-DiT / HarmoniCa / **LayerCache** ◆ | — | — | — | — | BWCache ○ |
+| **Step Cache**       | DeepCache / FORA ◆ | TeaCache / FBCache / MagCache / EasyCache / ERTACache ◆ | — | TaylorSeer / HiCache / AB-Cache / FoCa / SpeCa ◆ | — | — | — | FasterCache ○ |
+| **Block Cache**      | Δ-DiT ◆ | Cache Me if You Can / BlockDance ◆ | DBCache / Skip-DiT / HarmoniCa / ProfilingDiT / **LayerCache** ◆ | — | — | — | — | BWCache ○ |
 | **Attention Cache**  | T-GATE ◆ | — | — | — | — | FEB-Cache (Attn) ○ | — | PAB ◆ / FasterCache ○ |
 | **MLP Cache**        | FORA (MLP) ◆ | — | — | — | — | FEB-Cache (MLP) ◆ | — | — |
-| **Token Cache**      | — | Chipmunk ◆ | — | — | ToCa / DuCa / FastCache ◆ | — | — | — |
+| **Token Cache**      | — | Chipmunk ◆ | — | — | ToCa / DuCa / FastCache / ClusCa ◆ | — | — | — |
 | **Frequency Band**   | — | — | — | FreqCa (高频预测) ○ | — | FreqCa / SeaCache / FEB-Cache / **SpectralCache** ◆ | — | **SpectralCache** ○ |
 | **CFG Branch**       | — | — | — | — | — | FasterCache (CFG+freq) ○ | CFG-Cache ◆ | — |
-| **Residual**         | Δ-DiT ◆ | Chipmunk ○ | **LayerCache** (JVP) ◆ | AB-Cache / FoCa / HiCache ◆ | — | — | — | — |
+| **Residual**         | Δ-DiT ◆ | Chipmunk / ERTACache ○ | **LayerCache** (JVP) ◆ | AB-Cache / FoCa / HiCache / HyCa ◆ | — | — | — | — |
 
 > **怎么读这张表**：
 > - 横向看：一个调度策略下都有哪些缓存粒度的代表。
@@ -257,7 +270,9 @@ Awesome-Dit-Cache
   * 简介：首个系统化利用扩散模型时序冗余的 training-free 方法。基于 UNet skip connection 观察：高层特征跨相邻步变化平缓。DeepCache 跨步复用 UNet 上采样路径的 deep feature，浅层每步重算。在 SD 1.5/2.1 上可取得约 2.3× 加速，几乎无损。**仅适用于 UNet，DiT 不适用**。
 
 * **FasterDiffusion**：
-  * 简介：发现 UNet encoder 对相邻 step 的输出非常相似，提出 encoder propagation：跨步复用 encoder 输出，仅 decoder 继续更新。同时引入 parallel decoding 降低串行开销。
+  * 地址：https://github.com/hutaiHang/Faster-Diffusion ![](https://img.shields.io/github/stars/hutaiHang/Faster-Diffusion.svg)
+  * 论文：[NeurIPS 2024 / arXiv 2312.09608](https://arxiv.org/abs/2312.09608)
+  * 简介：发现 UNet encoder 对相邻 step 的输出非常相似，提出 encoder propagation：跨步复用 encoder 输出，仅 decoder 继续更新。同时引入 parallel decoding 降低串行开销。DiT 变体参见 [sen-mao/FasterDiffusion-DiT](https://github.com/sen-mao/FasterDiffusion-DiT)。
 
 * **T-GATE**：
   * 地址：https://github.com/HaozheLiu-ST/T-GATE ![](https://img.shields.io/github/stars/HaozheLiu-ST/T-GATE.svg)
@@ -296,14 +311,17 @@ Awesome-Dit-Cache
   * 简介：把 residual 演化建模为几何衰减，提出统一幅值律，无需 calibration 即可 plug-and-play。
 
 * **EasyCache**：
+  * 地址：https://github.com/H-EmbodVis/EasyCache ![](https://img.shields.io/github/stars/H-EmbodVis/EasyCache.svg)
   * 论文：[ICCV 2025 / arXiv 2507.02860](https://arxiv.org/abs/2507.02860)
   * 简介：runtime adaptive self-correct：相对变换率 + 累计偏差双指标，自适应调整阈值，2.1–3.3× 加速。
 
 * **LazyDiT**：
+  * 地址：https://github.com/shawnricecake/lazydit ![](https://img.shields.io/github/stars/shawnricecake/lazydit.svg)
   * 论文：[AAAI 2025 / arXiv 2412.12444](https://arxiv.org/abs/2412.12444)
   * 简介：在每个 transformer layer 前插入线性预测器，用一阶 Taylor 近似 learn 相似度，决定是否跳过该层计算。
 
 * **Chipmunk**：
+  * 地址：https://github.com/sandyresearch/chipmunk ![](https://img.shields.io/github/stars/sandyresearch/chipmunk.svg)
   * 论文：[arXiv 2506.03275](https://arxiv.org/abs/2506.03275)
   * 简介：发现 5–25% 的 activation 占 70–90% 变化量，提出 column-sparse activation cache，硬件友好。
 
@@ -311,11 +329,17 @@ Awesome-Dit-Cache
   * 论文：[CVPR 2024 / arXiv 2312.03209](https://arxiv.org/abs/2312.03209)
   * 简介：每个 block 有独立阈值，相对变化超阈值才刷新，早期的 block-wise 阈值工作。
 
+* **ERTACache** (ICLR 2026)：
+  * 地址：https://github.com/bytedance/ERTACache ![](https://img.shields.io/github/stars/bytedance/ERTACache.svg)
+  * 论文：[arXiv 2508.21091](https://arxiv.org/abs/2508.21091)
+  * 简介：字节跳动提出。显式把缓存误差拆成 **feature shift error**（特征漂移）与 **step amplification error**（步放大）两部分，用三件套矫正：离线 residual profiling 挑可复用步 + 轨迹感知时步调整 + 闭式残差修正。在 Wan2.1 上 2.0× 加速，VBench 几乎无损。
+
 ### 3.3 Layer-Adaptive（深度自适应）
 
 在**层深度维度**决定哪些层算 / 哪些层缓存，代表了"不同层对 cache 敏感度不同"的洞察。
 
 * **HarmoniCa**：
+  * 地址：https://github.com/ModelTC/HarmoniCa ![](https://img.shields.io/github/stars/ModelTC/HarmoniCa.svg)
   * 论文：[arXiv 2410.01723](https://arxiv.org/abs/2410.01723)
   * 简介：首个 learning-based cache schedule 工作。在完整 denoising trajectory 上训练 cache controller，解决 train-inference mismatch。
 
@@ -325,11 +349,22 @@ Awesome-Dit-Cache
   * 简介：视频 DiT 的 content-adaptive schedule——**每个 video 都有独立的 cache 计划**。结合 residual 变化 + motion regularization，在 Open-Sora 上达到 4.49× 加速。
 
 * **DBCache (Dual Block Cache)**：
+  * 地址：https://github.com/vipshop/cache-dit ![](https://img.shields.io/github/stars/vipshop/cache-dit.svg)（唯品会 cache-dit 工程库的核心调度组件，无独立论文）
   * 简介：DiT block stack 分三段：**Probe（前段全算）→ Main（中段阈值缓存）→ Corrector（尾段纠正）**。典型的概率-决策-纠错架构。
 
 * **Skip-DiT**：
+  * 地址：https://github.com/OpenSparseLLMs/Skip-DiT ![](https://img.shields.io/github/stars/OpenSparseLLMs/Skip-DiT.svg)
   * 论文：[ICCV 2025 / arXiv 2411.17616](https://arxiv.org/abs/2411.17616)
   * 简介：借鉴 long-skip-connection 思想，深层做 static cache，浅层每步 update，解决深层 DiT 稳定性问题。
+
+* **BlockDance (CVPR 2025)**：
+  * 论文：[arXiv 2503.15927](https://arxiv.org/abs/2503.15927)
+  * 简介：发现去噪后期**结构焦点 block** 的 spatio-temporal 特征高度相似（**STSS** = Structurally Similar Spatio-Temporal），只对这些 block 做选择性 cache 而非一刀切 block-wise 缓存。BlockDance-Ada 变体引入轻量决策网络实现 instance-level 自适应。在 DiT-XL/2 (37.4%) / PixArt-α (25.4%) / Open-Sora (34.8%) 上 25–50% 加速。
+
+* **ProfilingDiT (ICCV 2025)**：
+  * 地址：https://github.com/GeekGuru123/ProfilingDiT ![](https://img.shields.io/github/stars/GeekGuru123/ProfilingDiT.svg)
+  * 论文：[arXiv 2504.03140](https://arxiv.org/abs/2504.03140)
+  * 简介：发现 DiT 大部分层对**前景/背景**有稳定偏好，且噪声相似度随去噪递增。据此 profile 把 block 拆成 FG-focused 与 BG-focused 两组，**前景块每步重算，背景块激进缓存**。Wan2.1 上 2.01× 加速。
 
 * **🔥 LayerCache (CVPR 2026)**：
   * 地址：https://github.com/UnicomAI/LayerCache
@@ -345,14 +380,25 @@ Awesome-Dit-Cache
   * 简介：**Cache-then-Forecast 范式开创**。用多步历史特征做差分近似各阶导数，Taylor 级数外推未来 step 的特征。奠定了后续预测类方法的理论基础。
 
 * **HiCache**：
+  * 地址：https://github.com/fenglang918/HiCache ![](https://img.shields.io/github/stars/fenglang918/HiCache.svg)
   * 论文：[arXiv 2508.16984](https://arxiv.org/abs/2508.16984)
   * 简介：发现 DiT 特征导数的近似呈多元高斯特征，改用 **Hermite 多项式**（高斯共轭的理论最优基）替换 Taylor 基，plug-and-play，显著提升稳定性。
 
-* **FoCa**：
-  * 简介：两阶段：**BDF2 预测 + Heun 校正**，把 cache 直接建模为 feature ODE 的数值积分。
+* **FoCa** (Forecast then Calibrate)：
+  * 论文：[arXiv 2508.16211](https://arxiv.org/abs/2508.16211)
+  * 简介：把 hidden feature 序列显式建模为 **feature-ODE**，用预测-校正求解器直接当 cache 外推器。大步长下依然稳定，FLUX 5.50×、HunyuanVideo 6.45× 加速。
 
 * **AB-Cache**：
-  * 简介：**Adams-Bashforth** 多步法，解释了 U 形相似度现象的数学根源——相邻 step 输出之间的线性关系。
+  * 论文：[arXiv 2504.10540](https://arxiv.org/abs/2504.10540)
+  * 简介：**Adams-Bashforth** 多步法，解释了 U 形相似度现象的数学根源——相邻 step 输出之间的线性关系，误差界 O(h^k)，在 FLUX.1-dev / HunyuanVideo 上约 3× 加速。
+
+* **SpeCa (ACM MM 2025)**：
+  * 论文：[arXiv 2509.11628](https://arxiv.org/abs/2509.11628)
+  * 简介：把 LLM **Speculative Decoding** 搬到 Diffusion Feature Cache——先用参考 timestep 预测 upcoming feature（forecast），再用 **parameter-free verifier** 接受/拒绝（verify），配合 sample-adaptive 计算预算。FLUX 上 **6.34× 加速**（质量降 5.5%），DiT 上 7.3×，HunyuanVideo 上 6.1×。相对 TaylorSeer 等"无验证"预测类方法补上了精度保证环节。
+
+* **HyCa (Hybrid ODE Cache)**：
+  * 论文：[arXiv 2510.04188](https://arxiv.org/abs/2510.04188)
+  * 简介：发现不同 feature 维度演化行为差异极大，**对所有维度套同一个 ODE solver 不是最优**。把 hidden feature 建模为多维 ODE 混合，**每个维度自选最合适的数值解算器**。training-free，FLUX 5.55× / HunyuanVideo 5.56× / Qwen-Image(Edit) 6.24× 加速。
 
 ### 3.5 Token-Level / Granularity（细粒度）
 
@@ -364,22 +410,30 @@ Awesome-Dit-Cache
   * 简介：首次在 **token 粒度**研究 DiT cache。发现不同 token 对缓存敏感度显著不同，细粒度选择适合 cache 的 token。
 
 * **DuCa (Dual Feature Cache)**：
+  * 地址：https://github.com/Shenyi-Z/DuCa ![](https://img.shields.io/github/stars/Shenyi-Z/DuCa.svg)
   * 论文：[arXiv 2412.18911](https://arxiv.org/abs/2412.18911)
   * 简介：ToCa 升级，token × layer 双层缓存。
 
 * **FastCache**：
+  * 地址：https://github.com/NoakLiu/FastCache-xDiT ![](https://img.shields.io/github/stars/NoakLiu/FastCache-xDiT.svg)
   * 论文：[arXiv 2505.20353](https://arxiv.org/abs/2505.20353)
   * 简介：静态 token 用**可学习线性近似**直接映射，活跃 token 全算，可达 4.5× 激进加速。
 
 * **DiCache**：
+  * 地址：https://github.com/Bujiazi/DiCache ![](https://img.shields.io/github/stars/Bujiazi/DiCache.svg)
   * 论文：[arXiv 2508.17356](https://arxiv.org/abs/2508.17356)
   * 简介：**让模型自己决定 cache**——用 shallow feature 作为 probe，基于变化触发重算。
+
+* **ClusCa (ACM MM 2025)**：
+  * 论文：[arXiv 2509.10312](https://arxiv.org/abs/2509.10312)
+  * 简介：在 fresh step 用 **KMeans 对 token 聚类**，后续步每簇只算 1 个 token，其余簇内传播。token 计算量降 >90%，在 FLUX 上 **4.96× 加速**，ImageReward 保持在原版 99.49%。论文标题"Compute Only 16 Tokens in One Timestep"信息量很大。
 
 ### 3.6 Frequency-Aware（频域类）
 
 在**频率维度**区分高低频特征的不同时序行为。
 
 * **FEB-Cache**：
+  * 地址：https://github.com/aSleepyTree/EB-Cache ![](https://img.shields.io/github/stars/aSleepyTree/EB-Cache.svg)
   * 论文：[arXiv 2503.07120](https://arxiv.org/abs/2503.07120)
   * 简介：发现 **Attention 偏低频结构、MLP 偏高频细节**的互补频谱敏感性。提出分阶段频域缓存表：早期重 MLP cache，后期重 Attention cache。
 
@@ -418,10 +472,14 @@ Awesome-Dit-Cache
 * **PAB** → 见 3.1
 * **FasterCache** → 见 3.9
 * **AdaCache** → 见 3.3
+* **BlockDance** → 见 3.3（DiT-XL/2 / PixArt-α / Open-Sora 通吃）
+* **ProfilingDiT** → 见 3.3（Wan2.1 专用，FG/BG 拆分）
+* **ERTACache** → 见 3.2（Wan2.1 上 VBench 几乎无损）
 * **MixCache** (Mixture-of-Cache)：
   * 论文：[arXiv 2508.12691](https://arxiv.org/abs/2508.12691)
   * 简介：多个 cache 策略组成 mixture，router 动态选择。
 * **BWCache** (Block-Wise Cache)：
+  * 地址：https://github.com/hsc113/BWCache ![](https://img.shields.io/github/stars/hsc113/BWCache.svg)
   * 论文：[arXiv 2509.13789](https://arxiv.org/abs/2509.13789)
   * 简介：视频 DiT 的 block-wise 缓存。
 * **EasyCache** → 见 3.2
@@ -434,6 +492,8 @@ Awesome-Dit-Cache
   * 地址：https://github.com/Vchitect/FasterCache ![](https://img.shields.io/github/stars/Vchitect/FasterCache.svg)
   * 论文：[ICLR 2025 / arXiv 2410.19355](https://arxiv.org/abs/2410.19355)
   * 简介：Feature × CFG × Frequency 三轴融合，Vchitect-2.0 上 1.67×。
+* **HyCa** → 见 3.4（per-dim ODE 混合，算 Predictive × Residual 双轴 hybrid）
+* **ERTACache** → 见 3.2（Timestep × Residual 两类误差联合矫正）
 * **SpectralCache** → 见 3.6
 * **LayerCache** → 见 3.3（Layer + Predictive 两轴）
 
