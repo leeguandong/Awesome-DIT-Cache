@@ -64,6 +64,7 @@ Awesome-Dit-Cache
   - [3.7 CFG-Level Caching](#37-cfg-level-caching)
   - [3.8 Video DiT Cache（视频专用）](#38-video-dit-cache视频专用)
   - [3.9 Hybrid / Multi-Dimensional（混合类）](#39-hybrid--multi-dimensional混合类)
+  - [3.10 Inter-Request / Service-Level Cache（跨请求服务化）](#310-inter-request--service-level-cache跨请求服务化)
 - [4. 测评](#4-测评)
   - [4.1 常用评测指标](#41-常用评测指标)
   - [4.2 基线模型](#42-基线模型)
@@ -113,11 +114,20 @@ Awesome-Dit-Cache
 | **FEB-Cache** | 2025 | DiT | Frequency (Attn/MLP 分频) | ~2.0× | [2503.07120](https://arxiv.org/abs/2503.07120) | [aSleepyTree/EB-Cache](https://github.com/aSleepyTree/EB-Cache) |
 | **FreqCa** | 2025 | DiT | Frequency (低频复用+高频预测) | ~7.14× | [2510.08669](https://arxiv.org/abs/2510.08669) | - |
 | **SeaCache** | CVPR 2026 | DiT | Spectral-Evolution-Aware | ~2.5× | - | [jiwoogit/SeaCache](https://github.com/jiwoogit/SeaCache) |
-| **🔥 SpectralCache** | 2026 | DiT (FLUX/PixArt) | Hybrid (TADS×CEB×FDC) | **2.46×** | Coming soon | [leeguandong/SpectralCache](https://github.com/leeguandong/SpectralCache) |
+| **🔥 SpectralCache** | 2026 | DiT (FLUX/PixArt) | Hybrid (TADS×CEB×FDC) | **2.46×** | [2603.05315](https://arxiv.org/abs/2603.05315) | [leeguandong/SpectralCache](https://github.com/leeguandong/SpectralCache) |
 | **🔥 LayerCache** | 2026 | Flow Matching (Qwen-Image/FLUX) | Layer-Adaptive + JVP | **1.71×** | Coming soon | [leeguandong/LayerCache](https://github.com/leeguandong/LayerCache) |
 | **MixCache** | 2025 | Video DiT | Mixture-of-Cache | ~2.2× | [2508.12691](https://arxiv.org/abs/2508.12691) | - |
 | **BWCache** | 2025 | Video DiT | Block-Wise | ~2.0× | [2509.13789](https://arxiv.org/abs/2509.13789) | [hsc113/BWCache](https://github.com/hsc113/BWCache) |
 | **ERTACache** | ICLR 2026 | DiT / Video DiT (Wan2.1) | Timestep-Adaptive + 残差矫正 | ~2.0× | [2508.21091](https://arxiv.org/abs/2508.21091) | [bytedance/ERTACache](https://github.com/bytedance/ERTACache) |
+| **GoCache** | 2025 | DiT | Predictive (梯度补偿) | 50% blocks cached, FID -43% | [2503.05156](https://arxiv.org/abs/2503.05156) | - |
+| **ProCache** | 2025 | DiT / PixArt-α | Constraint-aware + Selective Compute | **2.90× DiT / 1.96× PixArt** | [2512.17298](https://arxiv.org/abs/2512.17298) | - |
+| **DisCa** | 2026 | Video DiT (蒸馏后) | Learnable Predictor + Distill-Compatible | **11.8×** | [2602.05449](https://arxiv.org/abs/2602.05449) | - |
+| **FlowCache** | 2026 | AR Video (MAGI-1 / SkyReels-V2) | Chunkwise + KV 压缩 | 2.38× / **6.7×** | [2602.10825](https://arxiv.org/abs/2602.10825) | - |
+| **AccelAes** | 2026 | DiT (Lumina-Next) | Aesthetic-Aware 时空压缩 | 2.11× (+11.9% ImageReward) | [2603.12575](https://arxiv.org/abs/2603.12575) | - |
+| **WorldCache** | 2026 | Video World Model (Cosmos-Predict2.5) | Content-Aware + Motion-Adaptive | 2.3× | [2603.22286](https://arxiv.org/abs/2603.22286) | - |
+| **HetCache** | 2026 | Video DiT (MV2V Editing) | Heterogeneous (context vs. generative tokens) | 2.67× | [2603.24260](https://arxiv.org/abs/2603.24260) | - |
+| **DiffSparse** | 2026 | DiT-XL/PixArt/FLUX/Wan2.1 | Token Sparsity + Cache (learned) | 54% FLOPs↓ on PixArt | [2604.03674](https://arxiv.org/abs/2604.03674) | - |
+| **Chorus** | 2026 | 4-step distilled Video DiT | **Inter-Request 三段式** | ~1.45× (+45%) | [2604.04451](https://arxiv.org/abs/2604.04451) | - |
 
 > 备注：加速比对应各自论文的最佳无损/近无损配置，数值来自原论文的 FLUX、SD3、PixArt、CogVideoX、Open-Sora 等主流 backbone。
 
@@ -129,11 +139,12 @@ Awesome-Dit-Cache
 2024Q2  FORA / Δ-DiT                                                 (UNet cache 思路迁移到 DiT)
 2024Q3  PAB                                                          (视频 DiT 金字塔广播)
 2024Q4  TeaCache / ToCa / HarmoniCa                                  (timestep 阈值 / token 级 / learning)
-2025Q1  TaylorSeer / BlockDance                                      (Cache-then-Forecast 开创 / STSS block)
+2025Q1  TaylorSeer / BlockDance / GoCache                            (Cache-then-Forecast 开创 / STSS block / 梯度补偿)
 2025Q2  MagCache / Chipmunk / LazyDiT / ProfilingDiT / AB-Cache     (幅值律 / 稀疏增量 / learned skip / FG-BG profile / Adams-Bashforth)
 2025Q3  HiCache / FoCa / ClusCa / SpeCa / ERTACache                 (Hermite / Feature-ODE / token cluster / speculate-verify / 残差矫正)
-2025Q4  FreqCa / FEB-Cache / DiCache / HyCa                         (频域 / 自触发 / per-dim ODE mixture)
-2026Q1  SeaCache / SpectralCache / LayerCache                       (频谱演化 / 频域 hybrid / 层异质 + JVP)
+2025Q4  FreqCa / FEB-Cache / DiCache / HyCa / ProCache              (频域 / 自触发 / per-dim ODE mixture / constraint-aware)
+2026Q1  SeaCache / SpectralCache / LayerCache / DisCa / FlowCache    (频谱演化 / 频域 hybrid / 层异质 + JVP / distill 兼容 / AR video chunkwise)
+2026Q2  AccelAes / WorldCache / HetCache / DiffSparse / Chorus      (aesthetic-aware / video world model / V2V 异质 / token sparsity / inter-request)
 ```
 
 ## 2. 按缓存粒度分类（What is cached）
@@ -155,6 +166,9 @@ Awesome-Dit-Cache
 | **FasterCache** | 整步 feature + CFG 分支 | 混合复用 |
 | **SpeCa** | 未来 step 的 feature 预测值 | 投机预测 + parameter-free 验证器接受/拒绝 |
 | **ERTACache** | 整步 residual 输出 | 可复用步离线 profile + 时步调整 + 闭式残差矫正 |
+| **ProCache** | 整步 feature | constraint-aware 非均匀调度 + 深层 block / 高重要性 token 选择性重算 |
+| **DisCa** | 整步 feature（蒸馏后模型） | 轻量可学习 predictor + Restricted MeanFlow 蒸馏兼容 |
+| **Chorus** | 整步 latent feature | **跨请求**复用：早期 full reuse + 中段 region-specific + Token-Guided Attention Amplification |
 
 ### 2.2 Block Cache（Transformer Block 输出）
 
@@ -171,6 +185,8 @@ Awesome-Dit-Cache
 | **LayerCache** (本作) | 层组（Shallow/Middle/Deep）级输出 + JVP |
 | **BlockDance** | 结构焦点块在去噪后期的 STSS 特征 |
 | **ProfilingDiT** | 前景/背景倾向的 block 分组,背景块可 cache |
+| **GoCache** | block 输出 + 缓存梯度队列 (50% blocks 缓存) |
+| **DiffSparse** | 层 × token 联合稀疏（DP solver 学习每层激活率）|
 
 ### 2.3 Attention Cache（注意力模块）
 
@@ -203,6 +219,9 @@ Awesome-Dit-Cache
 | **FastCache** | 静态 token 用学习的线性近似映射 |
 | **Chipmunk** | 低贡献 activation 的 column-sparse cache |
 | **ClusCa** | KMeans 对 token 聚类,每簇仅算 1 个 token,簇内传播 |
+| **HetCache** | 视频编辑 token 拆 context / generative 两类,只缓存 context |
+| **AccelAes** | 按 cross-attn aesthetic signal 选 token，低相关区域压缩 |
+| **DiffSparse** | learned per-layer token sparsity allocation |
 
 ### 2.6 Frequency-Band Cache（频带分解）
 
@@ -236,6 +255,7 @@ Awesome-Dit-Cache
 | **AB-Cache / FoCa / HiCache** | 把 cache 看作 ODE 数值积分的状态量 |
 | **HyCa** | 按 feature 维度拆 ODE,每维自选解算器 |
 | **ERTACache** | 显式拆分 "feature shift + step amplification" 两类误差,解析闭式矫正 |
+| **GoCache** | 缓存与重算之间的特征差作 "梯度",inflection-aware 加权回传补偿 |
 
 ### 2.9 缓存粒度 × 调度策略 交叉矩阵
 
@@ -243,20 +263,21 @@ Awesome-Dit-Cache
 
 | 粒度 \ 策略 | Static | Timestep-Adaptive | Layer-Adaptive | Predictive | Token-Level | Frequency-Aware | CFG | Hybrid |
 |-------------|:---:|:---:|:---:|:---:|:---:|:---:|:---:|:---:|
-| **Step Cache**       | DeepCache / FORA ◆ | TeaCache / FBCache / MagCache / EasyCache / ERTACache ◆ | — | TaylorSeer / HiCache / AB-Cache / FoCa / SpeCa ◆ | — | — | — | FasterCache ○ |
-| **Block Cache**      | Δ-DiT ◆ | Cache Me if You Can / BlockDance ◆ | DBCache / Skip-DiT / HarmoniCa / ProfilingDiT / **LayerCache** ◆ | — | — | — | — | BWCache ○ |
+| **Step Cache**       | DeepCache / FORA ◆ | TeaCache / FBCache / MagCache / EasyCache / ERTACache / ProCache ◆ | — | TaylorSeer / HiCache / AB-Cache / FoCa / SpeCa / DisCa ◆ | — | — | — | FasterCache ○ / Chorus (inter-req) ○ |
+| **Block Cache**      | Δ-DiT ◆ | Cache Me if You Can / BlockDance ◆ | DBCache / Skip-DiT / HarmoniCa / ProfilingDiT / GoCache / DiffSparse / **LayerCache** ◆ | — | — | — | — | BWCache ○ |
 | **Attention Cache**  | T-GATE ◆ | — | — | — | — | FEB-Cache (Attn) ○ | — | PAB ◆ / FasterCache ○ |
 | **MLP Cache**        | FORA (MLP) ◆ | — | — | — | — | FEB-Cache (MLP) ◆ | — | — |
-| **Token Cache**      | — | Chipmunk ◆ | — | — | ToCa / DuCa / FastCache / ClusCa ◆ | — | — | — |
+| **Token Cache**      | — | Chipmunk ◆ | — | — | ToCa / DuCa / FastCache / ClusCa / HetCache / AccelAes / DiffSparse ◆ | — | — | — |
 | **Frequency Band**   | — | — | — | FreqCa (高频预测) ○ | — | FreqCa / SeaCache / FEB-Cache / **SpectralCache** ◆ | — | **SpectralCache** ○ |
 | **CFG Branch**       | — | — | — | — | — | FasterCache (CFG+freq) ○ | CFG-Cache ◆ | — |
-| **Residual**         | Δ-DiT ◆ | Chipmunk / ERTACache ○ | **LayerCache** (JVP) ◆ | AB-Cache / FoCa / HiCache / HyCa ◆ | — | — | — | — |
+| **Residual**         | Δ-DiT ◆ | Chipmunk / ERTACache ○ | **LayerCache** (JVP) ◆ | AB-Cache / FoCa / HiCache / HyCa / GoCache ◆ | — | — | — | — |
 
 > **怎么读这张表**：
 > - 横向看：一个调度策略下都有哪些缓存粒度的代表。
 > - 纵向看：同一粒度下不同调度思路的演化。
 > - **LayerCache** 同时命中 *Block / Residual* 粒度 + *Layer-Adaptive / Predictive* 策略（所以在 Hybrid 意义上是"层粒度 + 预测"）。
 > - **SpectralCache** 同时命中 *Frequency Band* 粒度 + *Frequency-Aware / Hybrid* 策略。
+> - **Inter-Request 维度**（跨请求的 cache 复用）独立于上面 8 列：**Chorus** 是该维度首作，专攻 4-step 蒸馏视频 DiT 服务化场景，详见 §3.10。
 
 ## 3. 按调度策略详述（How to decide）
 
@@ -334,6 +355,10 @@ Awesome-Dit-Cache
   * 论文：[arXiv 2508.21091](https://arxiv.org/abs/2508.21091)
   * 简介：字节跳动提出。显式把缓存误差拆成 **feature shift error**（特征漂移）与 **step amplification error**（步放大）两部分，用三件套矫正：离线 residual profiling 挑可复用步 + 轨迹感知时步调整 + 闭式残差修正。在 Wan2.1 上 2.0× 加速，VBench 几乎无损。
 
+* **ProCache** (2025-12)：
+  * 论文：[arXiv 2512.17298](https://arxiv.org/abs/2512.17298)
+  * 简介：把"何时刷新"建模为 constraint-aware 调度搜索问题，生成与 DiT 时序特征对齐的**非均匀**激活节奏，避免固定间隔 cache 与 DiT 动力学失配；并在深层 block / 高重要性 token 上做选择性重算抑制误差累积。**training-free**，PixArt-α 1.96× / DiT 2.90×。
+
 ### 3.3 Layer-Adaptive（深度自适应）
 
 在**层深度维度**决定哪些层算 / 哪些层缓存，代表了"不同层对 cache 敏感度不同"的洞察。
@@ -365,6 +390,14 @@ Awesome-Dit-Cache
   * 地址：https://github.com/GeekGuru123/ProfilingDiT ![](https://img.shields.io/github/stars/GeekGuru123/ProfilingDiT.svg)
   * 论文：[arXiv 2504.03140](https://arxiv.org/abs/2504.03140)
   * 简介：发现 DiT 大部分层对**前景/背景**有稳定偏好，且噪声相似度随去噪递增。据此 profile 把 block 拆成 FG-focused 与 BG-focused 两组，**前景块每步重算，背景块激进缓存**。Wan2.1 上 2.01× 加速。
+
+* **GoCache** (Gradient-Optimized Cache, 2025-03)：
+  * 论文：[arXiv 2503.05156](https://arxiv.org/abs/2503.05156)
+  * 简介：针对 cached block 引入的近似误差，构建**缓存-重算特征差**作为梯度信号，配合 **inflection-aware** 调度（在去噪轨迹拐点处加权回传）补偿误差。50% blocks 缓存下 IS +26.3% / FID -43%，开销持平。
+
+* **DiffSparse** (2026-04)：
+  * 论文：[arXiv 2604.03674](https://arxiv.org/abs/2604.03674)
+  * 简介：把"每层每 token 是否激活"建模为可微优化问题——learnable controller + DP solver 联合求解层间 token sparsity 分配，端到端学习最优 cache + 重算策略。在 DiT-XL/2 / PixArt-α / FLUX / Wan2.1 通用，PixArt-α 上 20 步 54% FLOPs 削减且质量提升。
 
 * **🔥 LayerCache (CVPR 2026)**：
   * 地址：https://github.com/UnicomAI/LayerCache
@@ -400,6 +433,10 @@ Awesome-Dit-Cache
   * 论文：[arXiv 2510.04188](https://arxiv.org/abs/2510.04188)
   * 简介：发现不同 feature 维度演化行为差异极大，**对所有维度套同一个 ODE solver 不是最优**。把 hidden feature 建模为多维 ODE 混合，**每个维度自选最合适的数值解算器**。training-free，FLUX 5.55× / HunyuanVideo 5.56× / Qwen-Image(Edit) 6.24× 加速。
 
+* **DisCa** (Distillation-Compatible Learnable Feature Caching, 2026-02)：
+  * 论文：[arXiv 2602.05449](https://arxiv.org/abs/2602.05449)
+  * 简介：突破 training-free cache 在**蒸馏后视频 DiT** 上掉点严重的瓶颈。一是用**轻量可学习神经预测器**取代手工启发，更准地外推高维特征；二是配套 **Restricted MeanFlow** 蒸馏策略，使 step distillation × feature cache 共存近无损。报告 **11.8×** 加速，是当前蒸馏 + cache 联合栈最强的单点。
+
 ### 3.5 Token-Level / Granularity（细粒度）
 
 在 **token 维度**决定哪些 token 激活 / 哪些 token 用旧值。
@@ -428,6 +465,14 @@ Awesome-Dit-Cache
   * 论文：[arXiv 2509.10312](https://arxiv.org/abs/2509.10312)
   * 简介：在 fresh step 用 **KMeans 对 token 聚类**，后续步每簇只算 1 个 token，其余簇内传播。token 计算量降 >90%，在 FLUX 上 **4.96× 加速**，ImageReward 保持在原版 99.49%。论文标题"Compute Only 16 Tokens in One Timestep"信息量很大。
 
+* **HetCache** (2026-03)：
+  * 论文：[arXiv 2603.24260](https://arxiv.org/abs/2603.24260)
+  * 简介：面向 masked V2V 视频编辑，把 spatio-temporal token 显式拆成 **context** 与 **generative** 两类，仅缓存与 generative token 关联最强、语义最具代表性的 context token，跳过其余冗余注意力。2.67× 加速且编辑保真度近无损。
+
+* **AccelAes** (2026-03)：
+  * 论文：[arXiv 2603.12575](https://arxiv.org/abs/2603.12575)
+  * 简介：观察到 denoising 在**美学描述词**对应的空间位置上是非均匀的——cross-attention 的高响应区才是真正影响美学评分的区域。AccelAes 据此对低相关区域做 spatio-temporal 削减，把算力集中到美学敏感区。Lumina-Next 上 2.11× 加速且 **ImageReward +11.9%**（罕见的"加速反提质"案例）。
+
 ### 3.6 Frequency-Aware（频域类）
 
 在**频率维度**区分高低频特征的不同时序行为。
@@ -448,6 +493,7 @@ Awesome-Dit-Cache
 
 * **🔥 SpectralCache (本作)**：
   * 地址：https://github.com/leeguandong/SpectralCache
+  * 论文：[arXiv 2603.05315](https://arxiv.org/abs/2603.05315)
   * 简介：三轴正交的 Hybrid 频域 cache：
     - **TADS** (Timestep-Aware Dynamic Scheduling)：cosine bell 时步阈值调度
     - **CEB** (Cumulative Error Budget)：连续缓存上限 C_max，防误差级联
@@ -483,6 +529,15 @@ Awesome-Dit-Cache
   * 论文：[arXiv 2509.13789](https://arxiv.org/abs/2509.13789)
   * 简介：视频 DiT 的 block-wise 缓存。
 * **EasyCache** → 见 3.2
+* **HetCache** → 见 3.5（MV2V 编辑专用，token 异质拆分）
+* **DisCa** → 见 3.4（蒸馏后视频 DiT，11.8×）
+* **WorldCache** (2026-03)：
+  * 论文：[arXiv 2603.22286](https://arxiv.org/abs/2603.22286)
+  * 简介：首个专攻**视频 world model**（如 Cosmos-Predict2.5-2B）的 cache 工作。常规 cache 假设特征近静态，在动态场景会产生 ghosting / blur。WorldCache 引入**motion-adaptive 阈值** + saliency-weighted drift 估计 + blending&warping 近似 + phase-aware 阈值调度，在 2.3× 加速下保留 99.4% 基线质量。
+
+* **FlowCache** (2026-02)：
+  * 论文：[arXiv 2602.10825](https://arxiv.org/abs/2602.10825)
+  * 简介：面向**自回归视频** chunk-by-chunk 生成场景。发现不同 chunk 去噪模式差异大，统一 cache 不优；提出 chunkwise 独立 cache 策略 + importance-redundancy 联合 KV 压缩。MAGI-1 上 2.38×，**SkyReels-V2 上 6.7×**。
 
 ### 3.9 Hybrid / Multi-Dimensional（混合类）
 
@@ -496,6 +551,14 @@ Awesome-Dit-Cache
 * **ERTACache** → 见 3.2（Timestep × Residual 两类误差联合矫正）
 * **SpectralCache** → 见 3.6
 * **LayerCache** → 见 3.3（Layer + Predictive 两轴）
+
+### 3.10 Inter-Request / Service-Level Cache（跨请求服务化）
+
+前面 §3.1–3.9 全部聚焦在**单次推理内部**做 cache。当模型已被 step distillation 压到 4 步、单请求 cache 已无空间可挤时，下一个加速维度只能是**跨请求**：在生产服务中复用历史请求的 latent 特征。
+
+* **Chorus** (2026-04)：
+  * 论文：[arXiv 2604.04451](https://arxiv.org/abs/2604.04451)
+  * 简介：首次系统化研究 4-step 蒸馏视频 DiT 的服务化加速。提出**跨请求 cache 复用**：denoising 过程分三段——早期 full reuse、中段 region-specific cache、后段刷新；配套 **Token-Guided Attention Amplification** 维持 prompt 语义对齐。在工业级 4-step 模型上达 **45% 加速**（≈1.45×）。是当前唯一从"服务"而非"模型"角度切的 cache 工作。
 
 ## 4. 测评
 
