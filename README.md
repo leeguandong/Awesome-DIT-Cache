@@ -83,7 +83,7 @@ Awesome-Dit-Cache
 | **DeepCache** | CVPR 2024 | UNet (SD 1.5/2.x) | Static + 时步 | ~2.3× | [2312.00858](https://arxiv.org/abs/2312.00858) | [horseee/DeepCache](https://github.com/horseee/DeepCache) |
 | **FasterDiffusion** | NeurIPS 2024 | UNet | Static (encoder skip) | ~1.8× | [2312.09608](https://arxiv.org/abs/2312.09608) | [hutaiHang/Faster-Diffusion](https://github.com/hutaiHang/Faster-Diffusion) |
 | **T-GATE V1/V2** | 2024 | SD / PixArt / LCM | 阶段式 (cross-attn freeze) | ~1.5× | [2404.02747](https://arxiv.org/abs/2404.02747) | [HaozheLiu-ST/T-GATE](https://github.com/HaozheLiu-ST/T-GATE) |
-| **FORA** | 2024 | DiT | Static 固定区间 | ~1.8× | [2407.01425](https://arxiv.org/abs/2407.01425) | - |
+| **FORA** | 2024 | DiT | Static 固定区间 | ~1.8× | [2407.01425](https://arxiv.org/abs/2407.01425) | [prathebaselva/FORA](https://github.com/prathebaselva/FORA) |
 | **Δ-DiT** | 2024 | DiT | Static (residual cache) | ~1.6× | [2406.01125](https://arxiv.org/abs/2406.01125) | - |
 | **Block Cache / Cache Me if You Can** | CVPR 2024 | UNet | Layer-Adaptive 阈值 | ~1.8× | [2312.03209](https://arxiv.org/abs/2312.03209) | - |
 | **BlockDance** | CVPR 2025 | DiT / Video DiT | Block-level (STSS block) + 时步 | 1.25–1.50× | [2503.15927](https://arxiv.org/abs/2503.15927) | - |
@@ -102,29 +102,29 @@ Awesome-Dit-Cache
 | **DuCa** (Dual Feature Cache) | 2024 | DiT | Token × Layer 双层 | ~1.9× | [2412.18911](https://arxiv.org/abs/2412.18911) | [Shenyi-Z/DuCa](https://github.com/Shenyi-Z/DuCa) |
 | **FastCache** | 2025 | DiT | Token 线性近似 | ~4.5× | [2505.20353](https://arxiv.org/abs/2505.20353) | [NoakLiu/FastCache-xDiT](https://github.com/NoakLiu/FastCache-xDiT) |
 | **DiCache** | 2025 | DiT | shallow probe 自触发 | ~2.3× | [2508.17356](https://arxiv.org/abs/2508.17356) | [Bujiazi/DiCache](https://github.com/Bujiazi/DiCache) |
-| **ClusCa** | ACM MM 2025 | DiT (FLUX/HunyuanVideo) | Token Cluster (KMeans 簇内传播) | **4.96× FLUX** | [2509.10312](https://arxiv.org/abs/2509.10312) | - |
+| **ClusCa** | ACM MM 2025 | DiT (FLUX/HunyuanVideo) | Token Cluster (KMeans 簇内传播) | **4.96× FLUX** | [2509.10312](https://arxiv.org/abs/2509.10312) | [Shenyi-Z/Cache4Diffusion](https://github.com/Shenyi-Z/Cache4Diffusion) |
 | **DBCache** | 2025 | DiT | Probe-Decide-Correct | ~2.0× | - | [vipshop/cache-dit](https://github.com/vipshop/cache-dit) |
 | **Skip-DiT** | ICCV 2025 | DiT | Long-Skip-Connection + cache | 1.5–2× | [2411.17616](https://arxiv.org/abs/2411.17616) | [OpenSparseLLMs/Skip-DiT](https://github.com/OpenSparseLLMs/Skip-DiT) |
 | **TaylorSeer** | ICCV 2025 | DiT | Predictive (Taylor) | ~2.4× | [2503.06923](https://arxiv.org/abs/2503.06923) | [Shenyi-Z/TaylorSeer](https://github.com/Shenyi-Z/TaylorSeer) |
 | **HiCache** | 2025 | DiT | Predictive (Hermite) | ~2.6× | [2508.16984](https://arxiv.org/abs/2508.16984) | [fenglang918/HiCache](https://github.com/fenglang918/HiCache) |
 | **FoCa** | 2025 | DiT / Video DiT | Predictive (Feature-ODE) | **5.50× FLUX** | [2508.16211](https://arxiv.org/abs/2508.16211) | - |
 | **AB-Cache** | 2025 | DiT / Video DiT | Predictive (Adams-Bashforth) | ~3× | [2504.10540](https://arxiv.org/abs/2504.10540) | - |
-| **SpeCa** | ACM MM 2025 | DiT (FLUX/HunyuanVideo) | Predictive (Forecast-then-Verify) | **6.34× FLUX** | [2509.11628](https://arxiv.org/abs/2509.11628) | - |
+| **SpeCa** | ACM MM 2025 | DiT (FLUX/HunyuanVideo) | Predictive (Forecast-then-Verify) | **6.34× FLUX** | [2509.11628](https://arxiv.org/abs/2509.11628) | [Shenyi-Z/Cache4Diffusion](https://github.com/Shenyi-Z/Cache4Diffusion) |
 | **HyCa** | 2025 | DiT (FLUX/HunyuanVideo/Qwen-Image) | Predictive (per-dim ODE mixture) | **5.55× FLUX** | [2510.04188](https://arxiv.org/abs/2510.04188) | - |
 | **FEB-Cache** | 2025 | DiT | Frequency (Attn/MLP 分频) | ~2.0× | [2503.07120](https://arxiv.org/abs/2503.07120) | [aSleepyTree/EB-Cache](https://github.com/aSleepyTree/EB-Cache) |
 | **FreqCa** | 2025 | DiT | Frequency (低频复用+高频预测) | ~7.14× | [2510.08669](https://arxiv.org/abs/2510.08669) | - |
 | **SeaCache** | CVPR 2026 | DiT | Spectral-Evolution-Aware | ~2.5× | - | [jiwoogit/SeaCache](https://github.com/jiwoogit/SeaCache) |
 | **🔥 SpectralCache** | 2026 | DiT (FLUX/PixArt) | Hybrid (TADS×CEB×FDC) | **2.46×** | [2603.05315](https://arxiv.org/abs/2603.05315) | [leeguandong/SpectralCache](https://github.com/leeguandong/SpectralCache) |
-| **🔥 LayerCache** | 2026 | Flow Matching (Qwen-Image/FLUX) | Layer-Adaptive + JVP | **1.71×** | Coming soon | [leeguandong/LayerCache](https://github.com/leeguandong/LayerCache) |
+| **🔥 LayerCache** | 2026 | Flow Matching (Qwen-Image/FLUX) | Layer-Adaptive + JVP | **1.71×** | Coming soon | Coming soon |
 | **MixCache** | 2025 | Video DiT | Mixture-of-Cache | ~2.2× | [2508.12691](https://arxiv.org/abs/2508.12691) | - |
 | **BWCache** | 2025 | Video DiT | Block-Wise | ~2.0× | [2509.13789](https://arxiv.org/abs/2509.13789) | [hsc113/BWCache](https://github.com/hsc113/BWCache) |
 | **ERTACache** | ICLR 2026 | DiT / Video DiT (Wan2.1) | Timestep-Adaptive + 残差矫正 | ~2.0× | [2508.21091](https://arxiv.org/abs/2508.21091) | [bytedance/ERTACache](https://github.com/bytedance/ERTACache) |
-| **GoCache** | 2025 | DiT | Predictive (梯度补偿) | 50% blocks cached, FID -43% | [2503.05156](https://arxiv.org/abs/2503.05156) | - |
-| **ProCache** | 2025 | DiT / PixArt-α | Constraint-aware + Selective Compute | **2.90× DiT / 1.96× PixArt** | [2512.17298](https://arxiv.org/abs/2512.17298) | - |
-| **DisCa** | 2026 | Video DiT (蒸馏后) | Learnable Predictor + Distill-Compatible | **11.8×** | [2602.05449](https://arxiv.org/abs/2602.05449) | - |
-| **FlowCache** | 2026 | AR Video (MAGI-1 / SkyReels-V2) | Chunkwise + KV 压缩 | 2.38× / **6.7×** | [2602.10825](https://arxiv.org/abs/2602.10825) | - |
-| **AccelAes** | 2026 | DiT (Lumina-Next) | Aesthetic-Aware 时空压缩 | 2.11× (+11.9% ImageReward) | [2603.12575](https://arxiv.org/abs/2603.12575) | - |
-| **WorldCache** | 2026 | Video World Model (Cosmos-Predict2.5) | Content-Aware + Motion-Adaptive | 2.3× | [2603.22286](https://arxiv.org/abs/2603.22286) | - |
+| **GoCache** | 2025 | DiT | Predictive (梯度补偿) | 50% blocks cached, FID -43% | [2503.05156](https://arxiv.org/abs/2503.05156) | [qiujx0520/GOC_ICCV2025](https://github.com/qiujx0520/GOC_ICCV2025) |
+| **ProCache** | 2025 | DiT / PixArt-α | Constraint-aware + Selective Compute | **2.90× DiT / 1.96× PixArt** | [2512.17298](https://arxiv.org/abs/2512.17298) | [macovaseas/ProCache](https://github.com/macovaseas/ProCache) |
+| **DisCa** | 2026 | Video DiT (蒸馏后) | Learnable Predictor + Distill-Compatible | **11.8×** | [2602.05449](https://arxiv.org/abs/2602.05449) | [Tencent-Hunyuan/DisCa](https://github.com/Tencent-Hunyuan/DisCa) |
+| **FlowCache** | 2026 | AR Video (MAGI-1 / SkyReels-V2) | Chunkwise + KV 压缩 | 2.38× / **6.7×** | [2602.10825](https://arxiv.org/abs/2602.10825) | [mikeallen39/FlowCache](https://github.com/mikeallen39/FlowCache) |
+| **AccelAes** | 2026 | DiT (Lumina-Next) | Aesthetic-Aware 时空压缩 | 2.11× (+11.9% ImageReward) | [2603.12575](https://arxiv.org/abs/2603.12575) | [xuanhuayin/AccelAes](https://github.com/xuanhuayin/AccelAes) |
+| **WorldCache** | 2026 | Video World Model (Cosmos-Predict2.5) | Content-Aware + Motion-Adaptive | 2.3× | [2603.22286](https://arxiv.org/abs/2603.22286) | [umair1221/WorldCache](https://github.com/umair1221/WorldCache) |
 | **HetCache** | 2026 | Video DiT (MV2V Editing) | Heterogeneous (context vs. generative tokens) | 2.67× | [2603.24260](https://arxiv.org/abs/2603.24260) | - |
 | **DiffSparse** | 2026 | DiT-XL/PixArt/FLUX/Wan2.1 | Token Sparsity + Cache (learned) | 54% FLOPs↓ on PixArt | [2604.03674](https://arxiv.org/abs/2604.03674) | - |
 | **Chorus** | 2026 | 4-step distilled Video DiT | **Inter-Request 三段式** | ~1.45× (+45%) | [2604.04451](https://arxiv.org/abs/2604.04451) | - |
@@ -308,6 +308,7 @@ Awesome-Dit-Cache
   * 简介：发现 cross-attention 在早期去噪阶段即收敛，之后几乎不变。T-GATE 在收敛点直接 freeze cross-attention 输出并跨步复用。适用 SD、PixArt、LCM。V2 进一步支持 DiT。
 
 * **FORA** (First-Order Residual Approximation)：
+  * 地址：https://github.com/prathebaselva/FORA ![](https://img.shields.io/github/stars/prathebaselva/FORA.svg)
   * 论文：[arXiv 2407.01425](https://arxiv.org/abs/2407.01425)
   * 简介：把 DeepCache 思路迁移到 DiT，固定间隔复用 self-attn / MLP 输出。是 DiT cache 领域最早的 baseline 之一。
 
@@ -363,6 +364,7 @@ Awesome-Dit-Cache
   * 简介：字节跳动提出。显式把缓存误差拆成 **feature shift error**（特征漂移）与 **step amplification error**（步放大）两部分，用三件套矫正：离线 residual profiling 挑可复用步 + 轨迹感知时步调整 + 闭式残差修正。在 Wan2.1 上 2.0× 加速，VBench 几乎无损。
 
 * **ProCache** (2025-12)：
+  * 地址：https://github.com/macovaseas/ProCache ![](https://img.shields.io/github/stars/macovaseas/ProCache.svg)
   * 论文：[arXiv 2512.17298](https://arxiv.org/abs/2512.17298)
   * 简介：把"何时刷新"建模为 constraint-aware 调度搜索问题，生成与 DiT 时序特征对齐的**非均匀**激活节奏，避免固定间隔 cache 与 DiT 动力学失配；并在深层 block / 高重要性 token 上做选择性重算抑制误差累积。**training-free**，PixArt-α 1.96× / DiT 2.90×。
 
@@ -404,6 +406,7 @@ Awesome-Dit-Cache
   * 简介：发现 DiT 大部分层对**前景/背景**有稳定偏好，且噪声相似度随去噪递增。据此 profile 把 block 拆成 FG-focused 与 BG-focused 两组，**前景块每步重算，背景块激进缓存**。Wan2.1 上 2.01× 加速。
 
 * **GoCache** (Gradient-Optimized Cache, 2025-03)：
+  * 地址：https://github.com/qiujx0520/GOC_ICCV2025 ![](https://img.shields.io/github/stars/qiujx0520/GOC_ICCV2025.svg)
   * 论文：[arXiv 2503.05156](https://arxiv.org/abs/2503.05156)
   * 简介：针对 cached block 引入的近似误差，构建**缓存-重算特征差**作为梯度信号，配合 **inflection-aware** 调度（在去噪轨迹拐点处加权回传）补偿误差。50% blocks 缓存下 IS +26.3% / FID -43%，开销持平。
 
@@ -412,7 +415,7 @@ Awesome-Dit-Cache
   * 简介：把"每层每 token 是否激活"建模为可微优化问题——learnable controller + DP solver 联合求解层间 token sparsity 分配，端到端学习最优 cache + 重算策略。在 DiT-XL/2 / PixArt-α / FLUX / Wan2.1 通用，PixArt-α 上 20 步 54% FLOPs 削减且质量提升。
 
 * **🔥 LayerCache (CVPR 2026)**：
-  * 地址：https://github.com/UnicomAI/LayerCache
+  * 地址：Coming soon
   * 简介：发现 flow matching 模型中 transformer 的**层组速度异质性**——Shallow / Middle / Deep 有不同的稳定度：浅层稳定可激进缓存（98%），中层中等（52%），深层高度易变（0% 缓存）。提出 **3D schedule (timestep × layer group × JVP span K)** + greedy budget allocation + JVP-based forecasting。在 Qwen-Image 上 1.71× 加速，PSNR 34.16，显著优于 MeanCache baseline。
 
 ### 3.4 Predictive / Cache-then-Forecast（预测类）
@@ -438,6 +441,7 @@ Awesome-Dit-Cache
   * 简介：**Adams-Bashforth** 多步法，解释了 U 形相似度现象的数学根源——相邻 step 输出之间的线性关系，误差界 O(h^k)，在 FLUX.1-dev / HunyuanVideo 上约 3× 加速。
 
 * **SpeCa (ACM MM 2025)**：
+  * 地址：https://github.com/Shenyi-Z/Cache4Diffusion ![](https://img.shields.io/github/stars/Shenyi-Z/Cache4Diffusion.svg)（与 ClusCa / TaylorSeer 共用的统一仓库）
   * 论文：[arXiv 2509.11628](https://arxiv.org/abs/2509.11628)
   * 简介：把 LLM **Speculative Decoding** 搬到 Diffusion Feature Cache——先用参考 timestep 预测 upcoming feature（forecast），再用 **parameter-free verifier** 接受/拒绝（verify），配合 sample-adaptive 计算预算。FLUX 上 **6.34× 加速**（质量降 5.5%），DiT 上 7.3×，HunyuanVideo 上 6.1×。相对 TaylorSeer 等"无验证"预测类方法补上了精度保证环节。
 
@@ -446,6 +450,7 @@ Awesome-Dit-Cache
   * 简介：发现不同 feature 维度演化行为差异极大，**对所有维度套同一个 ODE solver 不是最优**。把 hidden feature 建模为多维 ODE 混合，**每个维度自选最合适的数值解算器**。training-free，FLUX 5.55× / HunyuanVideo 5.56× / Qwen-Image(Edit) 6.24× 加速。
 
 * **DisCa** (Distillation-Compatible Learnable Feature Caching, 2026-02)：
+  * 地址：https://github.com/Tencent-Hunyuan/DisCa ![](https://img.shields.io/github/stars/Tencent-Hunyuan/DisCa.svg)
   * 论文：[arXiv 2602.05449](https://arxiv.org/abs/2602.05449)
   * 简介：突破 training-free cache 在**蒸馏后视频 DiT** 上掉点严重的瓶颈。一是用**轻量可学习神经预测器**取代手工启发，更准地外推高维特征；二是配套 **Restricted MeanFlow** 蒸馏策略，使 step distillation × feature cache 共存近无损。报告 **11.8×** 加速，是当前蒸馏 + cache 联合栈最强的单点。
 
@@ -474,6 +479,7 @@ Awesome-Dit-Cache
   * 简介：**让模型自己决定 cache**——用 shallow feature 作为 probe，基于变化触发重算。
 
 * **ClusCa (ACM MM 2025)**：
+  * 地址：https://github.com/Shenyi-Z/Cache4Diffusion ![](https://img.shields.io/github/stars/Shenyi-Z/Cache4Diffusion.svg)（与 SpeCa / TaylorSeer 共用的统一仓库）
   * 论文：[arXiv 2509.10312](https://arxiv.org/abs/2509.10312)
   * 简介：在 fresh step 用 **KMeans 对 token 聚类**，后续步每簇只算 1 个 token，其余簇内传播。token 计算量降 >90%，在 FLUX 上 **4.96× 加速**，ImageReward 保持在原版 99.49%。论文标题"Compute Only 16 Tokens in One Timestep"信息量很大。
 
@@ -482,6 +488,7 @@ Awesome-Dit-Cache
   * 简介：面向 masked V2V 视频编辑，把 spatio-temporal token 显式拆成 **context** 与 **generative** 两类，仅缓存与 generative token 关联最强、语义最具代表性的 context token，跳过其余冗余注意力。2.67× 加速且编辑保真度近无损。
 
 * **AccelAes** (2026-03)：
+  * 地址：https://github.com/xuanhuayin/AccelAes ![](https://img.shields.io/github/stars/xuanhuayin/AccelAes.svg)
   * 论文：[arXiv 2603.12575](https://arxiv.org/abs/2603.12575)
   * 简介：观察到 denoising 在**美学描述词**对应的空间位置上是非均匀的——cross-attention 的高响应区才是真正影响美学评分的区域。AccelAes 据此对低相关区域做 spatio-temporal 削减，把算力集中到美学敏感区。Lumina-Next 上 2.11× 加速且 **ImageReward +11.9%**（罕见的"加速反提质"案例）。
 
@@ -544,10 +551,12 @@ Awesome-Dit-Cache
 * **HetCache** → 见 3.5（MV2V 编辑专用，token 异质拆分）
 * **DisCa** → 见 3.4（蒸馏后视频 DiT，11.8×）
 * **WorldCache** (2026-03)：
+  * 地址：https://github.com/umair1221/WorldCache ![](https://img.shields.io/github/stars/umair1221/WorldCache.svg)
   * 论文：[arXiv 2603.22286](https://arxiv.org/abs/2603.22286)
   * 简介：首个专攻**视频 world model**（如 Cosmos-Predict2.5-2B）的 cache 工作。常规 cache 假设特征近静态，在动态场景会产生 ghosting / blur。WorldCache 引入**motion-adaptive 阈值** + saliency-weighted drift 估计 + blending&warping 近似 + phase-aware 阈值调度，在 2.3× 加速下保留 99.4% 基线质量。
 
 * **FlowCache** (2026-02)：
+  * 地址：https://github.com/mikeallen39/FlowCache ![](https://img.shields.io/github/stars/mikeallen39/FlowCache.svg)
   * 论文：[arXiv 2602.10825](https://arxiv.org/abs/2602.10825)
   * 简介：面向**自回归视频** chunk-by-chunk 生成场景。发现不同 chunk 去噪模式差异大，统一 cache 不优；提出 chunkwise 独立 cache 策略 + importance-redundancy 联合 KV 压缩。MAGI-1 上 2.38×，**SkyReels-V2 上 6.7×**。
 
