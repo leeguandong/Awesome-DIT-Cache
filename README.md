@@ -22,7 +22,7 @@ Awesome-Dit-Cache
 
 **Why this repo / 为什么做这个仓库**
 
-过去两年里，Diffusion / DiT 推理加速领域的 Cache 类方法井喷式出现——从 2023 年 DeepCache 把"特征复用"第一次系统化，到 2025 年 TaylorSeer、HiCache、FoCa 把它升级成"数值积分式预测"，再到 2026 年 SeaCache / SpectralCache / LayerCache 把频域、层深度、JVP 前向一并拉进调度框架，方法演化已经跨越了 **"复用 → 调度 → 预测 → 多轴混合"** 四个阶段。但这个方向缺少一个**统一的中文索引**：论文分散在 CVPR / ICLR / ICCV / NeurIPS / arXiv，Video DiT 与 Image DiT 的工作被割裂收录，新老 baseline 对比困难。
+过去两年里，Diffusion / DiT 推理加速领域的 Cache 类方法井喷式出现——从 2023 年 DeepCache 把"特征复用"第一次系统化，到 2025 年 TaylorSeer、HiCache、FoCa 把它升级成"数值积分式预测"，再到 2026 年上半年 Spectrum（Chebyshev 全局近似）、JiT（空间 ODE 稀疏, 7×）、MeanCache（JVP 平均速度）、SenCache（敏感度驱动）、MoECa（MoE 分支级缓存）等把预测基底、空间冗余、MoE 架构适配等新维度一并拉入，方法演化已经跨越了 **"复用 → 调度 → 预测 → 多轴混合 → 架构/空间/频域自适应"** 五个阶段。但这个方向缺少一个**统一的中文索引**：论文分散在 CVPR / ICLR / ICCV / NeurIPS / ACM MM / arXiv，Video DiT 与 Image DiT 的工作被割裂收录，新老 baseline 对比困难。
 
 这个仓库就是为了填这个缺口：
 - **以"调度粒度"为主轴**（Static → Timestep → Layer → Predictive → Token → Frequency → CFG → Hybrid），把 2023–2026 的代表性方法一次性摆到同一张表里。
@@ -131,6 +131,25 @@ Awesome-Dit-Cache
 | **X-Cache** | 2026 | AR World Model (X-world / multi-camera driving) | Cross-Chunk Block Caching + dual-metric gating | 2.6× | [2604.20289](https://arxiv.org/abs/2604.20289) | - |
 | **ScalingCache** | 2026 | DiT / Wan2.1 / HunyuanVideo / FLUX | Difference Scaling + Dynamic Interval | ~2.5× video / **3.1× FLUX** | - | [Lihui-Gu/ScalingCache](https://github.com/Lihui-Gu/ScalingCache) |
 | **FIS-DiT** | 2026 | Few-step Video DiT (Wan2.2 / HunyuanVideo 1.5) | Training-free Frame Interleaved Sparsity | 2.11–2.41× | [2605.11869](https://arxiv.org/abs/2605.11869) | - |
+| **ECAD** | ICLR 2026 | PixArt / FLUX.1 | Static (进化搜索) | 2.58× | [2506.15682](https://arxiv.org/abs/2506.15682) | [AniAggarwal/ecad](https://github.com/AniAggarwal/ecad) |
+| **SVD-Cache** | 2026 | FLUX / HunyuanVideo | Predictive (SVD 子空间) | 5.55× | [2601.07396](https://arxiv.org/abs/2601.07396) | - |
+| **MeanCache** | ICLR 2026 | FLUX / Qwen-Image / HunyuanVideo | Predictive (JVP 平均速度) | **4.56×** | [2601.19961](https://arxiv.org/abs/2601.19961) | [UnicomAI/MeanCache](https://github.com/UnicomAI/MeanCache) |
+| **ToPi** | 2026 | DiT (in-context) | Token 剪枝 | >30%↓ | [2602.01609](https://arxiv.org/abs/2602.01609) | - |
+| **AdaCorrection** | 2026 | DiT / Video DiT | Timestep-Adaptive (偏移矫正) | ~2.0× | [2602.13357](https://arxiv.org/abs/2602.13357) | - |
+| **PrediT** | 2026 | DiT / Video DiT | Predictive (线性多步) | 5.54× | [2602.18093](https://arxiv.org/abs/2602.18093) | - |
+| **LESA** | 2026 | DiT / Video DiT | Predictive (KAN 多阶段) | **6.25×** | [2602.20497](https://arxiv.org/abs/2602.20497) | - |
+| **SenCache** | CVPR 2026 | Wan2.1 / CogVideoX / LTX-Video | Timestep-Adaptive (敏感度) | SOTA 质量 | [2602.24208](https://arxiv.org/abs/2602.24208) | [vita-epfl/SenCache](https://github.com/vita-epfl/SenCache) |
+| **RFC** | ICLR 2026 | DiT | Predictive (关系特征估计) | SOTA | - | [RFC project](https://cvlab.yonsei.ac.kr/projects/RFC/) |
+| **PreciseCache** | ICLR 2026 | Wan2.1-14B / Video DiT | Video Hybrid (step+block) | ~2.6× | [2603.00976](https://arxiv.org/abs/2603.00976) | - |
+| **Spectrum** | CVPR 2026 | FLUX.1 / DiT | Predictive (Chebyshev 多项式) | **4.79×** | [2603.01623](https://arxiv.org/abs/2603.01623) | [hanjq17/Spectrum](https://github.com/hanjq17/Spectrum) |
+| **TAP** | 2026 | DiT (多架构) | Token × Predictive 自适应 | — | [2603.03792](https://arxiv.org/abs/2603.03792) | - |
+| **SODA** | 2026 | DiT | Hybrid (敏感度+DP 调度) | — | [2603.07057](https://arxiv.org/abs/2603.07057) | - |
+| **JiT** | CVPR 2026 | FLUX.1-dev | Token / 空间 ODE 稀疏 | **7×** | [2603.10744](https://arxiv.org/abs/2603.10744) | [Wenhao-Sun77/Just-in-Time](https://github.com/Wenhao-Sun77/Just-in-Time) |
+| **TimeMask** | 2026 | DiT (image+video) | Timestep (learned masking) | 1.48–2.75× | [2603.19939](https://arxiv.org/abs/2603.19939) | - |
+| **SCOPE** | 2026 | MAGI-1 / SkyReels-V2 (AR video) | Video (三模调度) | 4.73× | [2604.02979](https://arxiv.org/abs/2604.02979) | - |
+| **E²-CRF** | 2026 | 频域扩散模型 | Frequency (事件驱动闭环) | ~2.2× | [2604.22901](https://arxiv.org/abs/2604.22901) | - |
+| **MotionCache** | 2026 | AR 视频生成 | Video (运动感知) | — | [2605.01725](https://arxiv.org/abs/2605.01725) | - |
+| **MoECa** | 2026 | DiT-MoE | Hybrid (MoE 分支级复用) | — | [2606.15615](https://arxiv.org/abs/2606.15615) | - |
 
 > 备注：加速比对应各自论文的最佳无损/近无损配置，数值来自原论文的 FLUX、SD3、PixArt、CogVideoX、Open-Sora 等主流 backbone。
 
@@ -145,10 +164,14 @@ Awesome-Dit-Cache
 2025Q1  TaylorSeer / BlockDance / GoCache                            (Cache-then-Forecast 开创 / STSS block / 梯度补偿)
 2025Q2  MagCache / Chipmunk / LazyDiT / ProfilingDiT / AB-Cache     (幅值律 / 稀疏增量 / learned skip / FG-BG profile / Adams-Bashforth)
 2025Q3  HiCache / FoCa / ClusCa / SpeCa / ERTACache                 (Hermite / Feature-ODE / token cluster / speculate-verify / 残差矫正)
-2025Q4  FreqCa / FEB-Cache / DiCache / HyCa / ProCache              (频域 / 自触发 / per-dim ODE mixture / constraint-aware)
+2025Q4  FreqCa / FEB-Cache / DiCache / HyCa / ProCache / ECAD       (频域 / 自触发 / per-dim ODE mixture / constraint-aware / 进化调度搜索)
 2026Q1  SeaCache / SpectralCache / LayerCache / DisCa / FlowCache    (频谱演化 / 频域 hybrid / 层异质 + JVP / distill 兼容 / AR video chunkwise)
-2026Q2  AccelAes / WorldCache / HetCache / DiffSparse / Chorus      (aesthetic-aware / video world model / V2V 异质 / token sparsity / inter-request)
-2026Q2  X-Cache / ScalingCache / FIS-DiT                            (跨 chunk block cache / 差分尺度 + 动态间隔 / 帧交错稀疏)
+2026Q1  SVD-Cache / MeanCache / RFC / SenCache / Spectrum / JiT      (SVD 子空间预测 / JVP 平均速度 / 关系特征估计 / 敏感度驱动 / Chebyshev / 空间 ODE)
+2026Q1  PrediT / LESA / TAP / SODA / TimeMask / PreciseCache        (线性多步 / KAN 多阶段 / token 自适应预测 / 敏感度 DP / learned masking / 视频精准缓存)
+2026Q1  AdaCorrection / ToPi                                         (偏移自适应矫正 / in-context token 剪枝)
+2026Q2  AccelAes / WorldCache / HetCache / DiffSparse / Chorus       (aesthetic-aware / video world model / V2V 异质 / token sparsity / inter-request)
+2026Q2  X-Cache / ScalingCache / FIS-DiT / SCOPE / E²-CRF           (跨 chunk block cache / 差分尺度 + 动态间隔 / 帧交错稀疏 / 三模 AR 调度 / 频域事件驱动)
+2026Q2  MotionCache / MoECa                                          (运动感知 AR cache / MoE 分支级复用)
 ```
 
 ## 2. 按缓存粒度分类（What is cached）
@@ -174,6 +197,12 @@ Awesome-Dit-Cache
 | **DisCa** | 整步 feature（蒸馏后模型） | 轻量可学习 predictor + Restricted MeanFlow 蒸馏兼容 |
 | **Chorus** | 整步 latent feature | **跨请求**复用：早期 full reuse + 中段 region-specific + Token-Guided Attention Amplification |
 | **ScalingCache** | 整步 activation | 离线 profile 冗余 + Dynamic Interval + Difference Scaling 复用 |
+| **SVD-Cache** | 整步 feature (SVD 分解) | 主子空间 EMA 预测 + 残差子空间直接复用 |
+| **MeanCache** | 整步 velocity (JVP) | 平均速度外推 + Peak-Suppressed 调度 |
+| **SenCache** | 整步 feature | 基于输出敏感度 per-sample 动态缓存 |
+| **AdaCorrection** | 整步 cached activation | 检测 offset drift + 逐层逐步插值矫正 |
+| **RFC** | 整步 feature | 关系特征估计 + 关系调度触发 |
+| **ECAD** | 整步 feature | 进化搜索 Pareto-optimal cache schedule |
 
 ### 2.2 Block Cache（Transformer Block 输出）
 
@@ -193,6 +222,9 @@ Awesome-Dit-Cache
 | **GoCache** | block 输出 + 缓存梯度队列 (50% blocks 缓存) |
 | **DiffSparse** | 层 × token 联合稀疏（DP solver 学习每层激活率）|
 | **X-Cache** | AR 视频 chunk 间 block residual（dual-metric gating，KV update chunk 必算）|
+| **TimeMask** | 每 timestep 学习 block-level mask，决定执行/跳过 |
+| **SODA** | 敏感度建模 + DP 跨层最优 cache 间隔 + 统一 pruning |
+| **PreciseCache** | LFCache (step-wise) + BlockCache (block-wise) 双层 |
 
 ### 2.3 Attention Cache（注意力模块）
 
@@ -229,6 +261,10 @@ Awesome-Dit-Cache
 | **AccelAes** | 按 cross-attn aesthetic signal 选 token，低相关区域压缩 |
 | **DiffSparse** | learned per-layer token sparsity allocation |
 | **FIS-DiT** | few-step 视频在帧位置上的 frame slice 稀疏（稳定 block 算子集，敏感 block 全算）|
+| **JiT** | 空间稀疏 anchor token 子集 → micro-flow ODE 传播 |
+| **ToPi** | in-context reference token 敏感度剪枝 |
+| **TAP** | 每 token 自选最优预测器 (proxy loss 最小化) |
+| **MoECa** | DiT-MoE 的 expert branch 级 token 跨步复用 |
 
 ### 2.6 Frequency-Band Cache（频带分解）
 
@@ -240,6 +276,8 @@ Awesome-Dit-Cache
 | **FreqCa** | 低频 reuse + 高频用二阶 Hermite 外推，CRF 残差降内存 99% |
 | **SeaCache** | 跟踪频谱演化触发刷新 |
 | **SpectralCache** (本作) | 低频 γ=0.8 严 / 高频 γ=1.5 松 的非对称阈值 |
+| **E²-CRF** | 频谱局部化 + 镜像对称降维 + 事件驱动 KV cache |
+| **Spectrum** | Chebyshev 多项式全局频域近似（ridge regression 拟合）|
 
 ### 2.7 CFG-Branch Cache
 
@@ -263,6 +301,9 @@ Awesome-Dit-Cache
 | **HyCa** | 按 feature 维度拆 ODE,每维自选解算器 |
 | **ERTACache** | 显式拆分 "feature shift + step amplification" 两类误差,解析闭式矫正 |
 | **GoCache** | 缓存与重算之间的特征差作 "梯度",inflection-aware 加权回传补偿 |
+| **SVD-Cache** | SVD 残差子空间（低能量直接复用）|
+| **MeanCache** | JVP 速度残差（平均速度构建）|
+| **PrediT** | 线性多步残差外推 + corrector |
 
 ### 2.9 缓存粒度 × 调度策略 交叉矩阵
 
@@ -270,14 +311,14 @@ Awesome-Dit-Cache
 
 | 粒度 \ 策略 | Static | Timestep-Adaptive | Layer-Adaptive | Predictive | Token-Level | Frequency-Aware | CFG | Hybrid |
 |-------------|:---:|:---:|:---:|:---:|:---:|:---:|:---:|:---:|
-| **Step Cache**       | DeepCache / FORA ◆ | TeaCache / FBCache / MagCache / EasyCache / ERTACache / ProCache / ScalingCache ◆ | — | TaylorSeer / HiCache / AB-Cache / FoCa / SpeCa / DisCa ◆ | — | — | — | FasterCache ○ / Chorus (inter-req) ○ |
-| **Block Cache**      | Δ-DiT ◆ | Cache Me if You Can / BlockDance ◆ | DBCache / Skip-DiT / HarmoniCa / ProfilingDiT / GoCache / DiffSparse / **LayerCache** ◆ | — | — | — | — | BWCache ○ / X-Cache (AR-chunk) ○ |
+| **Step Cache**       | DeepCache / FORA / ECAD ◆ | TeaCache / FBCache / MagCache / EasyCache / ERTACache / ProCache / ScalingCache / SenCache / AdaCorrection ◆ | — | TaylorSeer / HiCache / AB-Cache / FoCa / SpeCa / DisCa / SVD-Cache / MeanCache / Spectrum / PrediT / LESA / RFC ◆ | — | — | — | FasterCache ○ / Chorus (inter-req) ○ |
+| **Block Cache**      | Δ-DiT ◆ | Cache Me if You Can / BlockDance / TimeMask ◆ | DBCache / Skip-DiT / HarmoniCa / ProfilingDiT / GoCache / DiffSparse / SODA / **LayerCache** ◆ | — | — | — | — | BWCache ○ / X-Cache (AR-chunk) ○ / PreciseCache ○ |
 | **Attention Cache**  | T-GATE ◆ | — | — | — | — | FEB-Cache (Attn) ○ | — | PAB ◆ / FasterCache ○ |
 | **MLP Cache**        | FORA (MLP) ◆ | — | — | — | — | FEB-Cache (MLP) ◆ | — | — |
-| **Token Cache**      | — | Chipmunk ◆ | — | — | ToCa / DuCa / FastCache / ClusCa / HetCache / AccelAes / DiffSparse / FIS-DiT (frame) ◆ | — | — | — |
-| **Frequency Band**   | — | — | — | FreqCa (高频预测) ○ | — | FreqCa / SeaCache / FEB-Cache / **SpectralCache** ◆ | — | **SpectralCache** ○ |
+| **Token Cache**      | — | Chipmunk ◆ | — | — | ToCa / DuCa / FastCache / ClusCa / HetCache / AccelAes / DiffSparse / FIS-DiT / JiT / ToPi / TAP ◆ | — | — | MoECa (MoE branch) ○ |
+| **Frequency Band**   | — | — | — | FreqCa (高频预测) ○ / Spectrum ○ | — | FreqCa / SeaCache / FEB-Cache / E²-CRF / **SpectralCache** ◆ | — | **SpectralCache** ○ |
 | **CFG Branch**       | — | — | — | — | — | FasterCache (CFG+freq) ○ | CFG-Cache ◆ | — |
-| **Residual**         | Δ-DiT ◆ | Chipmunk / ERTACache ○ | **LayerCache** (JVP) ◆ | AB-Cache / FoCa / HiCache / HyCa / GoCache ◆ | — | — | — | — |
+| **Residual**         | Δ-DiT ◆ | Chipmunk / ERTACache ○ | **LayerCache** (JVP) ◆ | AB-Cache / FoCa / HiCache / HyCa / GoCache / SVD-Cache / MeanCache / PrediT ◆ | — | — | — | — |
 
 > **怎么读这张表**：
 > - 横向看：一个调度策略下都有哪些缓存粒度的代表。
@@ -320,6 +361,11 @@ Awesome-Dit-Cache
   * 地址：https://github.com/NUS-HPC-AI-Lab/VideoSys ![](https://img.shields.io/github/stars/NUS-HPC-AI-Lab/VideoSys.svg)
   * 论文：[ICLR 2025 / arXiv 2408.12588](https://arxiv.org/abs/2408.12588)
   * 简介：视频 DiT 的 attention 差分呈 U 形，空间 / 时间 / cross attention 稳定性不同。PAB 按注意力类型设置不同广播半径（金字塔式），在 Open-Sora / Latte / Open-Sora-Plan 上达到 21.6 FPS 实时生成，10.6× 加速。
+
+* **ECAD** (Evolutionary Caching, ICLR 2026)：
+  * 地址：https://github.com/AniAggarwal/ecad ![](https://img.shields.io/github/stars/AniAggarwal/ecad.svg)
+  * 论文：[ICLR 2026 / arXiv 2506.15682](https://arxiv.org/abs/2506.15682)
+  * 简介：用**遗传算法**在少量 calibration prompt 上自动搜索每个模型的最优 cache schedule，生成 Pareto 前沿（质量 vs. 延迟）。无需修改网络参数，可泛化到未见分辨率和模型变体。PixArt-α 上 2.58× 加速，相对前 SOTA 提升 4.47 FID。
 
 ### 3.2 Timestep-Adaptive（时步自适应）
 
@@ -373,6 +419,19 @@ Awesome-Dit-Cache
   * 论文：OpenReview (uXmbrTlko7)
   * 简介：用**离线轻量分析**少量样本拿到激活冗余画像，再在推理时**动态决定缓存间隔**（Dynamic Interval Caching）+ Difference Scaling 复用旧激活。Wan2.1 / HunyuanVideo 上约 **2.5× 加速 + ≤0.5% VBench 降幅**，FLUX 上 **3.1× 近无损**，LPIPS 相对前 SOTA 降 45%。
 
+* **SenCache** (CVPR 2026)：
+  * 地址：https://github.com/vita-epfl/SenCache ![](https://img.shields.io/github/stars/vita-epfl/SenCache.svg)
+  * 论文：[CVPR 2026 / arXiv 2602.24208](https://arxiv.org/abs/2602.24208)
+  * 简介：从理论出发，用模型输出对噪声 latent 和 timestep 扰动的**敏感度**来形式化缓存误差。据此构建 per-sample 动态缓存策略——敏感度低（特征稳定）的步自动缓存，敏感度高的步刷新。Wan2.1 / CogVideoX / LTX-Video 上在同等计算预算下达到 SOTA 视觉质量。
+
+* **AdaCorrection** (2026-02)：
+  * 论文：[arXiv 2602.13357](https://arxiv.org/abs/2602.13357)
+  * 简介：推理时轻量框架，动态检测缓存激活的 **offset drift** 并逐层逐步自适应矫正。Offset Estimation Module (OEM) 通过时空偏差统计量化偏移量，Adaptive Correction Module (ACM) 在缓存值与新鲜计算之间插值。
+
+* **TimeMask** (2026-03)：
+  * 论文：[arXiv 2603.19939](https://arxiv.org/abs/2603.19939)
+  * 简介：对预训练扩散模型**每个 timestep 独立学习** block 级 mask，决定哪些 block 执行、哪些通过特征复用跳过。相比全局优化方法，按 timestep 独立优化 mask 更省显存。1.48–2.75× 加速。
+
 ### 3.3 Layer-Adaptive（深度自适应）
 
 在**层深度维度**决定哪些层算 / 哪些层缓存，代表了"不同层对 cache 敏感度不同"的洞察。
@@ -414,6 +473,10 @@ Awesome-Dit-Cache
   * 论文：[arXiv 2604.03674](https://arxiv.org/abs/2604.03674)
   * 简介：把"每层每 token 是否激活"建模为可微优化问题——learnable controller + DP solver 联合求解层间 token sparsity 分配，端到端学习最优 cache + 重算策略。在 DiT-XL/2 / PixArt-α / FLUX / Wan2.1 通用，PixArt-α 上 20 步 54% FLOPs 削减且质量提升。
 
+* **SODA** (2026-03)：
+  * 论文：[arXiv 2603.07057](https://arxiv.org/abs/2603.07057)
+  * 简介：离线做细粒度**敏感度建模**（跨 timestep × layer × module），定义误差度量并用**动态规划**求解最优 cache 间隔分配。同时把 token pruning 的时机和比率也纳入敏感度指导，统一了 caching + pruning 的调度框架。
+
 * **🔥 LayerCache (CVPR 2026)**：
   * 地址：Coming soon
   * 简介：发现 flow matching 模型中 transformer 的**层组速度异质性**——Shallow / Middle / Deep 有不同的稳定度：浅层稳定可激进缓存（98%），中层中等（52%），深层高度易变（0% 缓存）。提出 **3D schedule (timestep × layer group × JVP span K)** + greedy budget allocation + JVP-based forecasting。在 Qwen-Image 上 1.71× 加速，PSNR 34.16，显著优于 MeanCache baseline。
@@ -454,6 +517,32 @@ Awesome-Dit-Cache
   * 论文：[arXiv 2602.05449](https://arxiv.org/abs/2602.05449)
   * 简介：突破 training-free cache 在**蒸馏后视频 DiT** 上掉点严重的瓶颈。一是用**轻量可学习神经预测器**取代手工启发，更准地外推高维特征；二是配套 **Restricted MeanFlow** 蒸馏策略，使 step distillation × feature cache 共存近无损。报告 **11.8×** 加速，是当前蒸馏 + cache 联合栈最强的单点。
 
+* **SVD-Cache** (2026-01)：
+  * 论文：[arXiv 2601.07396](https://arxiv.org/abs/2601.07396)
+  * 简介：对 DiT 特征做 **SVD 分解**，拆成主子空间（平滑可预测）和残差子空间（易变但低能量）。主子空间用 EMA 预测，残差子空间直接复用。**近无损 5.55×** 加速，兼容蒸馏 / 量化 / 稀疏注意力。
+
+* **MeanCache** (ICLR 2026)：
+  * 地址：https://github.com/UnicomAI/MeanCache ![](https://img.shields.io/github/stars/UnicomAI/MeanCache.svg)
+  * 论文：[ICLR 2026 / arXiv 2601.19961](https://arxiv.org/abs/2601.19961)
+  * 简介：引入**平均速度**视角——用缓存的 Jacobian-Vector Product (JVP) 从瞬时速度构建区间平均速度，缓解局部误差累积。配合 **Peak-Suppressed Shortest Path** 轨迹稳定性调度做预算约束下的最优复用。FLUX 4.12× / Qwen-Image 4.56× / HunyuanVideo 3.59×。
+
+* **Spectrum** (CVPR 2026)：
+  * 地址：https://github.com/hanjq17/Spectrum ![](https://img.shields.io/github/stars/hanjq17/Spectrum.svg)
+  * 论文：[CVPR 2026 / arXiv 2603.01623](https://arxiv.org/abs/2603.01623)
+  * 简介：把去噪 latent 特征视为**时间函数**，用 **Chebyshev 多项式**（ridge regression 拟合）做全局长程近似——超越 Taylor 的局部外推限制，误差有紧致上界。FLUX 上 **4.79× 加速**。
+
+* **LESA** (2026-02)：
+  * 论文：[arXiv 2602.20497](https://arxiv.org/abs/2602.20497)
+  * 简介：两阶段训练框架，用 **Kolmogorov-Arnold Networks (KAN)** 学习时序特征映射。多阶段多专家架构为不同噪声水平分配专门预测器。可达 **6.25× 加速**。
+
+* **PrediT** (Predict to Skip, 2026-02)：
+  * 论文：[arXiv 2602.18093](https://arxiv.org/abs/2602.18093)
+  * 简介：把特征预测形式化为**线性多步问题**，用 Adams-Moulton 式方法从历史信息预测未来输出。高动态区域配 corrector，加动态步长调制。**5.54× 延迟削减**。
+
+* **RFC** (Relational Feature Caching, ICLR 2026)：
+  * 论文：ICLR 2026 Poster
+  * 简介：利用输入-输出**关系**增强特征预测：Relational Feature Estimation (RFE) 用输入特征估计输出变化幅度，Relational Cache Scheduling (RCS) 仅在预测误差大时触发全量计算。
+
 ### 3.5 Token-Level / Granularity（细粒度）
 
 在 **token 维度**决定哪些 token 激活 / 哪些 token 用旧值。
@@ -492,6 +581,23 @@ Awesome-Dit-Cache
   * 论文：[arXiv 2603.12575](https://arxiv.org/abs/2603.12575)
   * 简介：观察到 denoising 在**美学描述词**对应的空间位置上是非均匀的——cross-attention 的高响应区才是真正影响美学评分的区域。AccelAes 据此对低相关区域做 spatio-temporal 削减，把算力集中到美学敏感区。Lumina-Next 上 2.11× 加速且 **ImageReward +11.9%**（罕见的"加速反提质"案例）。
 
+* **JiT** (Just-in-Time, CVPR 2026)：
+  * 地址：https://github.com/Wenhao-Sun77/Just-in-Time ![](https://img.shields.io/github/stars/Wenhao-Sun77/Just-in-Time.svg)
+  * 论文：[CVPR 2026 / arXiv 2603.10744](https://arxiv.org/abs/2603.10744)
+  * 简介：首次聚焦**空间冗余**而非时序冗余。构建由动态选择的稀疏 anchor token 驱动的 **spatially approximated generative ODE**——只算 token 子集，其余通过确定性 micro-flow（有限时间 ODE）保持结构一致性。FLUX.1-dev 上 **7× 加速**，是当前 token 类方法的最强单点。
+
+* **ToPi** (2026-02)：
+  * 论文：[arXiv 2602.01609](https://arxiv.org/abs/2602.01609)
+  * 简介：面向**in-context 生成**（如参考图拼接）的 training-free token 剪枝。通过离线校准的敏感度分析识别关键 attention 层，derive 影响力指标做 context token 选择性剪枝 + 时序更新策略。>30% 加速。
+
+* **TAP** (Token-Adaptive Predictor, 2026-03)：
+  * 论文：[arXiv 2603.03792](https://arxiv.org/abs/2603.03792)
+  * 简介：用首层全量计算作低成本 probe，为候选预测器（不同阶数 / 不同 horizon 的 Taylor 展开）计算 proxy loss，然后**每个 token 自选 proxy loss 最小的预测器**——异构 per-token 预测选择。
+
+* **MoECa** (2026-06)：
+  * 论文：[arXiv 2606.15615](https://arxiv.org/abs/2606.15615)
+  * 简介：面向 **DiT-MoE**（Mixture-of-Experts DiT）的细粒度缓存。在 expert branch 级做跨 timestep 特征复用，引入 expert-aware 自适应控制和 MoE / attention 路径同步缓存更新，保持中间状态稳定。
+
 ### 3.6 Frequency-Aware（频域类）
 
 在**频率维度**区分高低频特征的不同时序行为。
@@ -518,6 +624,10 @@ Awesome-Dit-Cache
     - **CEB** (Cumulative Error Budget)：连续缓存上限 C_max，防误差级联
     - **FDC** (Frequency-Decomposed Caching)：高低频带**非对称阈值**（低频严 γ=0.8 / 高频松 γ=1.5）
   * 在 FLUX.1-schnell 上 **2.46× 加速**，比 TeaCache 快 16%。
+
+* **E²-CRF** (2026-04)：
+  * 论文：[arXiv 2604.22901](https://arxiv.org/abs/2604.22901)
+  * 简介：面向频域扩散模型。利用**频谱局部化**（能量集中于低频）和**镜像对称**将有效频域维度减半；构建**闭环误差反馈系统**，事件驱动地缓存 transformer KV 特征并按残差动力学触发重算，替代固定调度。~2.2× 加速。
 
 ### 3.7 CFG-Level Caching
 
@@ -568,6 +678,18 @@ Awesome-Dit-Cache
   * 论文：[arXiv 2605.11869](https://arxiv.org/abs/2605.11869)
   * 简介：把优化轴从"时序去噪轨迹"换到"**latent 帧维度**"——观察到 few-step 视频 DiT 在帧位置上存在**结构一致性**与帧维稀疏性，于是在稳定 block 上稀疏计算**帧子集 latent slice**、敏感 block 上保留全计算，**完全不引入额外 feature-cache 显存**。Wan 2.2 / HunyuanVideo 1.5 上 2.11–2.41× 加速，VBench-Q / CLIP 近无损。
 
+* **PreciseCache** (ICLR 2026)：
+  * 论文：[ICLR 2026 / arXiv 2603.00976](https://arxiv.org/abs/2603.00976)
+  * 简介：自适应视频加速框架：**LFCache**（step-wise）+ **BlockCache**（block-wise）双层精准识别冗余特征并跳过。Wan2.1-14B 上约 **2.6× 加速**，无明显质量降损。
+
+* **SCOPE** (2026-04)：
+  * 论文：[arXiv 2604.02979](https://arxiv.org/abs/2604.02979)
+  * 简介：面向 AR 视频扩散的 training-free 框架，引入**三模调度器**（cache / predict / recompute）——预测模式用噪声级 Taylor 外推填补复用与重算间的空白；选择性计算把执行限定在 active 帧区间。MAGI-1 / SkyReels-V2 上 **4.73× 加速**。
+
+* **MotionCache** (2026-05)：
+  * 论文：[arXiv 2605.01725](https://arxiv.org/abs/2605.01725)
+  * 简介：利用帧间差分作为像素级运动特征的轻量代理，**按运动幅度动态调整去噪步频率**——静态像素区域激进跳步，高运动区域精算。
+
 ### 3.9 Hybrid / Multi-Dimensional（混合类）
 
 组合多个轴（time × layer × frequency × CFG × token）的混合方法。
@@ -580,6 +702,8 @@ Awesome-Dit-Cache
 * **ERTACache** → 见 3.2（Timestep × Residual 两类误差联合矫正）
 * **SpectralCache** → 见 3.6
 * **LayerCache** → 见 3.3（Layer + Predictive 两轴）
+* **SODA** → 见 3.3（敏感度 + DP 联合 caching/pruning）
+* **MoECa** → 见 3.5（MoE branch 级跨步复用）
 
 ### 3.10 Inter-Request / Service-Level Cache（跨请求服务化）
 
@@ -607,9 +731,9 @@ Awesome-Dit-Cache
 
 ### 4.2 基线模型
 
-**图像**：SD 1.5 / SDXL / PixArt-α / PixArt-Σ / FLUX.1-dev / FLUX.1-schnell / SD3 / Qwen-Image / Z-Image / LongCat-Image
+**图像**：SD 1.5 / SDXL / PixArt-α / PixArt-Σ / FLUX.1-dev / FLUX.1-schnell / SD3 / Qwen-Image / Z-Image / LongCat-Image / Lumina-Next / DiT-MoE
 
-**视频**：Open-Sora / Open-Sora-Plan / Latte / CogVideoX / HunyuanVideo / Wan2.1 / Wan2.2 / Mochi / Vchitect-2.0
+**视频**：Open-Sora / Open-Sora-Plan / Latte / CogVideoX / HunyuanVideo / Wan2.1 / Wan2.2 / Mochi / Vchitect-2.0 / LTX-Video / MAGI-1 / SkyReels-V2 / Cosmos-Predict2.5
 
 ### 4.3 常用 Benchmark
 
