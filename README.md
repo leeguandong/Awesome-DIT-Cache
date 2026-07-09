@@ -22,7 +22,7 @@ Awesome-Dit-Cache
 
 **Why this repo / 为什么做这个仓库**
 
-过去两年里，Diffusion / DiT 推理加速领域的 Cache 类方法井喷式出现——从 2023 年 DeepCache 把"特征复用"第一次系统化，到 2025 年 TaylorSeer、HiCache、FoCa 把它升级成"数值积分式预测"，再到 2026 年上半年 Spectrum（Chebyshev 全局近似）、JiT（空间 ODE 稀疏, 7×）、MeanCache（JVP 平均速度）、SenCache（敏感度驱动）、MoECa（MoE 分支级缓存）等把预测基底、空间冗余、MoE 架构适配等新维度一并拉入，方法演化已经跨越了 **"复用 → 调度 → 预测 → 多轴混合 → 架构/空间/频域自适应"** 五个阶段。但这个方向缺少一个**统一的中文索引**：论文分散在 CVPR / ICLR / ICCV / NeurIPS / ACM MM / arXiv，Video DiT 与 Image DiT 的工作被割裂收录，新老 baseline 对比困难。
+过去两年里，Diffusion / DiT 推理加速领域的 Cache 类方法井喷式出现——从 2023 年 DeepCache 把"特征复用"第一次系统化，到 2025 年 TaylorSeer、HiCache、FoCa 把它升级成"数值积分式预测"，再到 2026 年上半年 Spectrum（Chebyshev 全局近似）、JiT（空间 ODE 稀疏, 7×）、MeanCache（JVP 平均速度）、SenCache（敏感度驱动）、MoECa（MoE 分支级缓存）、LearniBridge（LoRA 校准）、SyncCache（音频驱动人像 cache）等把预测基底、空间冗余、MoE 架构适配、轻量校准、模态异质性等新维度一并拉入，方法演化已经跨越了 **"复用 → 调度 → 预测 → 多轴混合 → 架构/空间/频域/模态自适应"** 五个阶段。但这个方向缺少一个**统一的中文索引**：论文分散在 CVPR / ICLR / ICCV / NeurIPS / ACM MM / arXiv，Video DiT 与 Image DiT 的工作被割裂收录，新老 baseline 对比困难。
 
 这个仓库就是为了填这个缺口：
 - **以"调度粒度"为主轴**（Static → Timestep → Layer → Predictive → Token → Frequency → CFG → Hybrid），把 2023–2026 的代表性方法一次性摆到同一张表里。
@@ -148,8 +148,13 @@ Awesome-Dit-Cache
 | **TimeMask** | 2026 | DiT (image+video) | Timestep (learned masking) | 1.48–2.75× | [2603.19939](https://arxiv.org/abs/2603.19939) | - |
 | **SCOPE** | 2026 | MAGI-1 / SkyReels-V2 (AR video) | Video (三模调度) | 4.73× | [2604.02979](https://arxiv.org/abs/2604.02979) | - |
 | **E²-CRF** | 2026 | 频域扩散模型 | Frequency (事件驱动闭环) | ~2.2× | [2604.22901](https://arxiv.org/abs/2604.22901) | - |
+| **L2P-Cache** | CVPR 2026 | FLUX.1-dev / Qwen-Image | Predictive (learned linear weights) | 4.15× FLUX / 7.18× Qwen-Image | [2604.26365](https://arxiv.org/abs/2604.26365) | [Aredstone/L2P-Cache](https://github.com/Aredstone/L2P-Cache) |
+| **HSA** | 2026 | Video DiT (Wan-2 / LTX-2) | Token × timestep budget + KV sync | 50% / 25% runtime Pareto | [2605.06892](https://arxiv.org/abs/2605.06892) | [project](https://ernestchu.github.io/hsa) |
 | **MotionCache** | 2026 | AR 视频生成 | Video (运动感知) | — | [2605.01725](https://arxiv.org/abs/2605.01725) | - |
+| **SoftCap** | 2026 | FLUX.1-dev | Timestep-Adaptive (soft-budget control) | ImageReward 0.981 @ comparable FLOPs | [2605.27075](https://arxiv.org/abs/2605.27075) | - |
 | **MoECa** | 2026 | DiT-MoE | Hybrid (MoE 分支级复用) | — | [2606.15615](https://arxiv.org/abs/2606.15615) | - |
+| **LearniBridge** | ICML 2026 | FLUX / HunyuanVideo / Wan2.1 | Learnable calibration (LoRA bridge) | 5.87× / 5.75× / 4.10× | [2606.26778](https://arxiv.org/abs/2606.26778) | [Iiiiiiirene/LearniBridge](https://github.com/Iiiiiiirene/LearniBridge) |
+| **SyncCache** | ECCV 2026 | HunyuanVideo-Avatar / Wan-S2V | Video / modality-decoupled residual cache | 4.12× / 3.75× | [2606.30849](https://arxiv.org/abs/2606.30849) | - |
 
 > 备注：加速比对应各自论文的最佳无损/近无损配置，数值来自原论文的 FLUX、SD3、PixArt、CogVideoX、Open-Sora 等主流 backbone。
 
@@ -171,7 +176,8 @@ Awesome-Dit-Cache
 2026Q1  AdaCorrection / ToPi                                         (偏移自适应矫正 / in-context token 剪枝)
 2026Q2  AccelAes / WorldCache / HetCache / DiffSparse / Chorus       (aesthetic-aware / video world model / V2V 异质 / token sparsity / inter-request)
 2026Q2  X-Cache / ScalingCache / FIS-DiT / SCOPE / E²-CRF           (跨 chunk block cache / 差分尺度 + 动态间隔 / 帧交错稀疏 / 三模 AR 调度 / 频域事件驱动)
-2026Q2  MotionCache / MoECa                                          (运动感知 AR cache / MoE 分支级复用)
+2026Q2  L2P-Cache / HSA / MotionCache / SoftCap                      (可学习线性预测 / 异构步预算 / 运动感知 AR cache / 软预算控制)
+2026Q2  MoECa / LearniBridge / SyncCache                             (MoE 分支级复用 / LoRA 轻量校准 / 音频驱动人像模态解耦 cache)
 ```
 
 ## 2. 按缓存粒度分类（What is cached）
@@ -197,6 +203,7 @@ Awesome-Dit-Cache
 | **DisCa** | 整步 feature（蒸馏后模型） | 轻量可学习 predictor + Restricted MeanFlow 蒸馏兼容 |
 | **Chorus** | 整步 latent feature | **跨请求**复用：早期 full reuse + 中段 region-specific + Token-Guided Attention Amplification |
 | **ScalingCache** | 整步 activation | 离线 profile 冗余 + Dynamic Interval + Difference Scaling 复用 |
+| **SoftCap** | 整步 full/cached 决策状态 | Trajectory Drift Observer + soft-budget PI controller 动态调 full-trigger 阈值 |
 | **SVD-Cache** | 整步 feature (SVD 分解) | 主子空间 EMA 预测 + 残差子空间直接复用 |
 | **MeanCache** | 整步 velocity (JVP) | 平均速度外推 + Peak-Suppressed 调度 |
 | **SenCache** | 整步 feature | 基于输出敏感度 per-sample 动态缓存 |
@@ -225,6 +232,7 @@ Awesome-Dit-Cache
 | **TimeMask** | 每 timestep 学习 block-level mask，决定执行/跳过 |
 | **SODA** | 敏感度建模 + DP 跨层最优 cache 间隔 + 统一 pruning |
 | **PreciseCache** | LFCache (step-wise) + BlockCache (block-wise) 双层 |
+| **SyncCache** | 音频驱动人像 DiT 的 heavy DiT block residual | 复用稳定 inter-block residual，轻量 audio block 持续重算 |
 
 ### 2.3 Attention Cache（注意力模块）
 
@@ -261,6 +269,7 @@ Awesome-Dit-Cache
 | **AccelAes** | 按 cross-attn aesthetic signal 选 token，低相关区域压缩 |
 | **DiffSparse** | learned per-layer token sparsity allocation |
 | **FIS-DiT** | few-step 视频在帧位置上的 frame slice 稀疏（稳定 block 算子集，敏感 block 全算）|
+| **HSA** | spatiotemporal token 的异构 denoising step 预算 + KV-cache 同步 |
 | **JiT** | 空间稀疏 anchor token 子集 → micro-flow ODE 传播 |
 | **ToPi** | in-context reference token 敏感度剪枝 |
 | **TAP** | 每 token 自选最优预测器 (proxy loss 最小化) |
@@ -304,6 +313,9 @@ Awesome-Dit-Cache
 | **SVD-Cache** | SVD 残差子空间（低能量直接复用）|
 | **MeanCache** | JVP 速度残差（平均速度构建）|
 | **PrediT** | 线性多步残差外推 + corrector |
+| **L2P-Cache** | 历史特征轨迹的可学习线性组合残差 |
+| **LearniBridge** | 用低秩 LoRA bridge 校准跨 timestep cache 误差 |
+| **SyncCache** | 模态解耦的 inter-block residual 复用 |
 
 ### 2.9 缓存粒度 × 调度策略 交叉矩阵
 
@@ -311,14 +323,14 @@ Awesome-Dit-Cache
 
 | 粒度 \ 策略 | Static | Timestep-Adaptive | Layer-Adaptive | Predictive | Token-Level | Frequency-Aware | CFG | Hybrid |
 |-------------|:---:|:---:|:---:|:---:|:---:|:---:|:---:|:---:|
-| **Step Cache**       | DeepCache / FORA / ECAD ◆ | TeaCache / FBCache / MagCache / EasyCache / ERTACache / ProCache / ScalingCache / SenCache / AdaCorrection ◆ | — | TaylorSeer / HiCache / AB-Cache / FoCa / SpeCa / DisCa / SVD-Cache / MeanCache / Spectrum / PrediT / LESA / RFC ◆ | — | — | — | FasterCache ○ / Chorus (inter-req) ○ |
-| **Block Cache**      | Δ-DiT ◆ | Cache Me if You Can / BlockDance / TimeMask ◆ | DBCache / Skip-DiT / HarmoniCa / ProfilingDiT / GoCache / DiffSparse / SODA / **LayerCache** ◆ | — | — | — | — | BWCache ○ / X-Cache (AR-chunk) ○ / PreciseCache ○ |
+| **Step Cache**       | DeepCache / FORA / ECAD ◆ | TeaCache / FBCache / MagCache / EasyCache / ERTACache / ProCache / ScalingCache / SenCache / AdaCorrection / SoftCap ◆ | — | TaylorSeer / HiCache / AB-Cache / FoCa / SpeCa / DisCa / SVD-Cache / MeanCache / Spectrum / PrediT / LESA / RFC / L2P-Cache / LearniBridge ◆ | — | — | — | FasterCache ○ / Chorus (inter-req) ○ |
+| **Block Cache**      | Δ-DiT ◆ | Cache Me if You Can / BlockDance / TimeMask ◆ | DBCache / Skip-DiT / HarmoniCa / ProfilingDiT / GoCache / DiffSparse / SODA / **LayerCache** ◆ | — | — | — | — | BWCache ○ / X-Cache (AR-chunk) ○ / PreciseCache ○ / SyncCache ○ |
 | **Attention Cache**  | T-GATE ◆ | — | — | — | — | FEB-Cache (Attn) ○ | — | PAB ◆ / FasterCache ○ |
 | **MLP Cache**        | FORA (MLP) ◆ | — | — | — | — | FEB-Cache (MLP) ◆ | — | — |
-| **Token Cache**      | — | Chipmunk ◆ | — | — | ToCa / DuCa / FastCache / ClusCa / HetCache / AccelAes / DiffSparse / FIS-DiT / JiT / ToPi / TAP ◆ | — | — | MoECa (MoE branch) ○ |
+| **Token Cache**      | — | Chipmunk ◆ | — | — | ToCa / DuCa / FastCache / ClusCa / HetCache / AccelAes / DiffSparse / FIS-DiT / HSA / JiT / ToPi / TAP ◆ | — | — | MoECa (MoE branch) ○ |
 | **Frequency Band**   | — | — | — | FreqCa (高频预测) ○ / Spectrum ○ | — | FreqCa / SeaCache / FEB-Cache / E²-CRF / **SpectralCache** ◆ | — | **SpectralCache** ○ |
 | **CFG Branch**       | — | — | — | — | — | FasterCache (CFG+freq) ○ | CFG-Cache ◆ | — |
-| **Residual**         | Δ-DiT ◆ | Chipmunk / ERTACache ○ | **LayerCache** (JVP) ◆ | AB-Cache / FoCa / HiCache / HyCa / GoCache / SVD-Cache / MeanCache / PrediT ◆ | — | — | — | — |
+| **Residual**         | Δ-DiT ◆ | Chipmunk / ERTACache ○ | **LayerCache** (JVP) ◆ | AB-Cache / FoCa / HiCache / HyCa / GoCache / SVD-Cache / MeanCache / PrediT / L2P-Cache / LearniBridge ◆ | — | — | — | SyncCache ○ |
 
 > **怎么读这张表**：
 > - 横向看：一个调度策略下都有哪些缓存粒度的代表。
@@ -432,6 +444,10 @@ Awesome-Dit-Cache
   * 论文：[arXiv 2603.19939](https://arxiv.org/abs/2603.19939)
   * 简介：对预训练扩散模型**每个 timestep 独立学习** block 级 mask，决定哪些 block 执行、哪些通过特征复用跳过。相比全局优化方法，按 timestep 独立优化 mask 更省显存。1.48–2.75× 加速。
 
+* **SoftCap** (2026-05)：
+  * 论文：[arXiv 2605.27075](https://arxiv.org/abs/2605.27075)
+  * 简介：给 cache-based DiT 推理加一层 **soft-budget control**。Trajectory Drift Observer 用轻量 hidden-state 统计估计局部 cache 风险，Soft-Budget PI Controller 根据实际 compute 与参考 profile 的偏差动态调整 full-step 触发阈值。FLUX.1-dev 上在接近相同 FLOPs 下优于 SpeCa，ImageReward 0.981、LPIPS-Full 0.498。
+
 ### 3.3 Layer-Adaptive（深度自适应）
 
 在**层深度维度**决定哪些层算 / 哪些层缓存，代表了"不同层对 cache 敏感度不同"的洞察。
@@ -538,6 +554,16 @@ Awesome-Dit-Cache
 * **PrediT** (Predict to Skip, 2026-02)：
   * 论文：[arXiv 2602.18093](https://arxiv.org/abs/2602.18093)
   * 简介：把特征预测形式化为**线性多步问题**，用 Adams-Moulton 式方法从历史信息预测未来输出。高动态区域配 corrector，加动态步长调制。**5.54× 延迟削减**。
+
+* **L2P-Cache** (Learnable Linear Predictor, CVPR 2026)：
+  * 地址：https://github.com/Aredstone/L2P-Cache ![](https://img.shields.io/github/stars/Aredstone/L2P-Cache.svg)
+  * 论文：[CVPR 2026 / arXiv 2604.26365](https://arxiv.org/abs/2604.26365)
+  * 简介：把固定 Taylor / Adams-Bashforth 系数替换成**可学习的 per-timestep 线性权重**，从历史 feature trajectory 重建当前特征。单卡约 20 秒快速训练，FLUX.1-dev 上 4.55× FLOPs reduction / 4.15× latency speedup，Qwen-Image 上最高 7.18×。
+
+* **LearniBridge** (ICML 2026)：
+  * 地址：https://github.com/Iiiiiiirene/LearniBridge ![](https://img.shields.io/github/stars/Iiiiiiirene/LearniBridge.svg)
+  * 论文：[ICML 2026 / arXiv 2606.26778](https://arxiv.org/abs/2606.26778)
+  * 简介：发现高加速比下 cache 误差的最优校准更新落在跨 prompt 共享的低秩子空间，提出轻量 **LoRA bridge** 在多个 timestep 间校准 feature cache。只需 3–5 个训练样本，FLUX / HunyuanVideo / Wan2.1 分别达到 5.87× / 5.75× / 4.10×。
 
 * **RFC** (Relational Feature Caching, ICLR 2026)：
   * 论文：ICLR 2026 Poster
@@ -690,6 +716,15 @@ Awesome-Dit-Cache
   * 论文：[arXiv 2605.01725](https://arxiv.org/abs/2605.01725)
   * 简介：利用帧间差分作为像素级运动特征的轻量代理，**按运动幅度动态调整去噪步频率**——静态像素区域激进跳步，高运动区域精算。
 
+* **HSA** (Heterogeneous Step Allocation, 2026-05)：
+  * 项目：https://ernestchu.github.io/hsa
+  * 论文：[arXiv 2605.06892](https://arxiv.org/abs/2605.06892)
+  * 简介：观察视频 DiT 中不同 spatiotemporal token 不需要同样多的 denoising steps，按 velocity dynamics 给 token 分配异构 step budget。为解决序列长度不一致，引入 **KV-cache synchronization** 让 active token 仍可 attend 到全序列，并用 cached Euler update 一步推进 skipped token。Wan-2 / LTX-2 上在 50% / 25% runtime 等激进预算下保持更优 Pareto。
+
+* **SyncCache** (ECCV 2026)：
+  * 论文：[ECCV 2026 / arXiv 2606.30849](https://arxiv.org/abs/2606.30849)
+  * 简介：面向 audio-driven portrait animation 的 training-free cache。利用音频驱动高频人脸区域与低频背景的非对称动态，做 **Spatially-Asymmetric Probing** 与 **Modality-Decoupled Caching**：heavy DiT block 的稳定 inter-block residual 复用，轻量 audio block 持续重算以保 lip sync。HunyuanVideo-Avatar 4.12×、Wan-S2V 3.75×。
+
 ### 3.9 Hybrid / Multi-Dimensional（混合类）
 
 组合多个轴（time × layer × frequency × CFG × token）的混合方法。
@@ -704,6 +739,9 @@ Awesome-Dit-Cache
 * **LayerCache** → 见 3.3（Layer + Predictive 两轴）
 * **SODA** → 见 3.3（敏感度 + DP 联合 caching/pruning）
 * **MoECa** → 见 3.5（MoE branch 级跨步复用）
+* **HSA** → 见 3.8（Token step budget + KV-cache synchronization）
+* **LearniBridge** → 见 3.4（Feature cache + low-rank LoRA calibration）
+* **SyncCache** → 见 3.8（Spatial + modality + residual cache）
 
 ### 3.10 Inter-Request / Service-Level Cache（跨请求服务化）
 
@@ -733,7 +771,7 @@ Awesome-Dit-Cache
 
 **图像**：SD 1.5 / SDXL / PixArt-α / PixArt-Σ / FLUX.1-dev / FLUX.1-schnell / SD3 / Qwen-Image / Z-Image / LongCat-Image / Lumina-Next / DiT-MoE
 
-**视频**：Open-Sora / Open-Sora-Plan / Latte / CogVideoX / HunyuanVideo / Wan2.1 / Wan2.2 / Mochi / Vchitect-2.0 / LTX-Video / MAGI-1 / SkyReels-V2 / Cosmos-Predict2.5
+**视频**：Open-Sora / Open-Sora-Plan / Latte / CogVideoX / HunyuanVideo / HunyuanVideo-Avatar / Wan2.1 / Wan2.2 / Wan-S2V / LTX-Video / LTX-2 / Mochi / Vchitect-2.0 / MAGI-1 / SkyReels-V2 / Cosmos-Predict2.5
 
 ### 4.3 常用 Benchmark
 
