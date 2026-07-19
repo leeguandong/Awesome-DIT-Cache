@@ -10,9 +10,9 @@ Awesome-Dit-Cache
   <a href="https://github.com/leeguandong/Awesome-Dit-Cache/forks"> <img src="https://img.shields.io/github/forks/leeguandong/Awesome-Dit-Cache.svg?style=popout-square" alt="GitHub forks"></a>
 </p>
 
-> A curated list of feature caching / training-free acceleration methods for Diffusion Models and Diffusion Transformers (DiT), covering image, video, and flow-matching generators.
+> A curated list of feature caching / reuse-based acceleration methods for Diffusion Models and Diffusion Transformers (DiT), covering image, video, audio, and flow-matching generators.
 
-本项目旨在收集和梳理 **扩散模型（UNet / DiT / Flow Matching）推理加速** 中的 **Cache 类方法**——包括 Timestep-Adaptive、Layer-Adaptive、Predictive (Cache-then-Forecast)、Token-Level、Frequency-Aware、CFG-Level、Video-DiT 等主流范式。聚焦训练无关（training-free）的特征缓存与近邻近似方法。
+本项目旨在收集和梳理 **扩散模型（UNet / DiT / Flow Matching）推理加速** 中的 **Cache / Reuse 类方法**——包括 Timestep-Adaptive、Layer-Adaptive、Predictive (Cache-then-Forecast)、Fine-Grained (Token / Region / Channel)、Frequency-Aware、CFG-Level、Video-DiT 与 Service/System-Level 等主流范式。以训练无关（training-free）的特征缓存与近邻近似为主，也覆盖以 cache 为核心的轻量校准和系统/硬件协同。
 
 如果本项目能给您带来一点点帮助，麻烦点个⭐️吧～
 
@@ -22,21 +22,21 @@ Awesome-Dit-Cache
 
 **Why this repo / 为什么做这个仓库**
 
-过去两年里，Diffusion / DiT 推理加速领域的 Cache 类方法井喷式出现——从 2023 年 DeepCache 把"特征复用"第一次系统化，到 2025 年 TaylorSeer、HiCache、FoCa 把它升级成"数值积分式预测"，再到 2026 年上半年 Spectrum（Chebyshev 全局近似）、JiT（空间 ODE 稀疏, 7×）、MeanCache（JVP 平均速度）、SenCache（敏感度驱动）、MoECa（MoE 分支级缓存）、LearniBridge（LoRA 校准）、SyncCache（音频驱动人像 cache）等把预测基底、空间冗余、MoE 架构适配、轻量校准、模态异质性等新维度一并拉入，方法演化已经跨越了 **"复用 → 调度 → 预测 → 多轴混合 → 架构/空间/频域/模态自适应"** 五个阶段。但这个方向缺少一个**统一的中文索引**：论文分散在 CVPR / ICLR / ICCV / NeurIPS / ACM MM / arXiv，Video DiT 与 Image DiT 的工作被割裂收录，新老 baseline 对比困难。
+过去两年里，Diffusion / DiT 推理加速领域的 Cache 类方法井喷式出现——从 2023 年 DeepCache 把"特征复用"第一次系统化，到 2025 年 TaylorSeer、HiCache、FoCa 把它升级成"数值积分式预测"，再到 2026 年的 Spectrum（Chebyshev 全局近似）、JiT（空间 ODE 稀疏，7×）、MeanCache（JVP 平均速度）、SenCache（敏感度驱动）、MoECa（MoE 分支级缓存）、LearniBridge（LoRA 校准）、SyncCache（音频驱动人像 cache），以及 Q3 新出现的 ACID（临界步双阈值）、Kaleido（通道级局部结果复用）、FlashDiff（区域级服务调度）、CODA（compute-cache 软硬协同）等，把预测基底、空间冗余、MoE 架构适配、轻量校准、模态异质性和系统协同等新维度一并拉入。方法演化已经跨越了 **"复用 → 调度 → 预测 → 多轴混合 → 架构/空间/频域/模态/系统自适应"** 五个阶段。但这个方向缺少一个**统一的中文索引**：论文分散在 CVPR / ICLR / ICCV / NeurIPS / ACM MM / arXiv，Video DiT 与 Image DiT 的工作被割裂收录，新老 baseline 对比困难。
 
 这个仓库就是为了填这个缺口：
-- **以"调度粒度"为主轴**（Static → Timestep → Layer → Predictive → Token → Frequency → CFG → Hybrid），把 2023–2026 的代表性方法一次性摆到同一张表里。
-- **双语**介绍，论文 + arXiv + 代码链接齐全，方便检索与追溯。
-- **覆盖范围** = Image DiT（FLUX / SD3 / PixArt / Qwen-Image）+ Video DiT（CogVideoX / HunyuanVideo / Wan / Open-Sora）+ Flow Matching，不只是狭义的 image 场景。
+- **以"调度策略"为主轴**（Static → Timestep → Layer → Predictive → Fine-Grained → Frequency → CFG → Hybrid），把 2023–2026 的代表性方法一次性摆到同一张表里。
+- **双语**介绍，尽量补齐论文、arXiv、项目页与代码状态，方便检索与追溯。
+- **覆盖范围** = Image DiT（FLUX / SD3 / PixArt / Qwen-Image）+ Video DiT（CogVideoX / HunyuanVideo / Wan / Open-Sora）+ Audio Diffusion（Stable Audio Open）+ Flow Matching，不只是狭义的 image 场景。
 
 **Scope / 收录边界**
 
-✅ 收录：training-free 特征缓存、激活复用、时步/层/token/频域/CFG 维度的复用策略、预测式缓存（Taylor/Hermite/ODE 数值法）、视频 DiT cache。
-❌ 暂不收录：量化（FP8/INT8）、蒸馏（step distillation / consistency models）、注意力内核优化（SageAttn、FlashAttn）、并行推理（xDiT / USP） —— 这些虽然常与 cache 叠加使用，但各自有独立的加速机理，另起仓库更合适。
+✅ 收录：以 **training-free** 特征缓存、激活/局部结果复用为主；覆盖时步、层、token、region、channel、频域、CFG 与跨请求维度，也收录以 cache 为核心的轻量预测器/校准器，以及直接支撑 cache 的服务系统和软硬协同工作。
+❌ 暂不收录：不以 cache / reuse 为核心的量化（FP8/INT8）、纯蒸馏（step distillation / consistency models）、纯注意力内核优化（SageAttn、FlashAttn）、纯并行推理（xDiT / USP）——这些虽然常与 cache 叠加使用，但各自有独立的加速机理，另起仓库更合适。
 
 **Maintainer**
 
-由 [@leeguandong](https://github.com/leeguandong) 维护，欢迎 issue / PR。如果你在做 cache 相关工作希望被收录，请提供：论文 arXiv、代码仓库、目标模型、加速比、**两轴归属**（缓存粒度 §2 + 调度策略 §3）。
+由 [@leeguandong](https://github.com/leeguandong) 维护，欢迎 issue / PR。如果你在做 cache 相关工作希望被收录，请提供：论文 arXiv、代码仓库、目标模型、加速比、**两轴归属**（缓存 / 复用粒度 §2 + 调度策略 §3）。
 
 ## 目录
 
@@ -44,32 +44,32 @@ Awesome-Dit-Cache
 - [1. 方法汇总](#1-方法汇总)
   - [1.1 方法全景表](#11-方法全景表)
   - [1.2 演化时间线](#12-演化时间线)
-- [2. 按缓存粒度分类（What is cached）](#2-按缓存粒度分类what-is-cached)
+- [2. 按缓存 / 复用粒度分类（What is cached or reused）](#2-按缓存--复用粒度分类what-is-cached-or-reused)
   - [2.1 Step Cache（整步输出）](#21-step-cache整步输出)
   - [2.2 Block Cache（Transformer Block 输出）](#22-block-cachetransformer-block-输出)
   - [2.3 Attention Cache（注意力模块）](#23-attention-cache注意力模块)
   - [2.4 MLP / FFN Cache](#24-mlp--ffn-cache)
-  - [2.5 Token Cache（token 子集）](#25-token-cachetoken-子集)
+  - [2.5 Fine-Grained Cache（token / region / channel）](#25-fine-grained-cachetoken--region--channel)
   - [2.6 Frequency-Band Cache（频带分解）](#26-frequency-band-cache频带分解)
   - [2.7 CFG-Branch Cache](#27-cfg-branch-cache)
   - [2.8 Residual Cache（层间残差）](#28-residual-cache层间残差)
-  - [2.9 缓存粒度 × 调度策略 交叉矩阵](#29-缓存粒度--调度策略-交叉矩阵)
+  - [2.9 缓存 / 复用粒度 × 调度策略 交叉矩阵](#29-缓存--复用粒度--调度策略-交叉矩阵)
 - [3. 按调度策略详述（How to decide）](#3-按调度策略详述how-to-decide)
   - [3.1 Static Caching（固定调度）](#31-static-caching固定调度)
   - [3.2 Timestep-Adaptive（时步自适应）](#32-timestep-adaptive时步自适应)
   - [3.3 Layer-Adaptive（深度自适应）](#33-layer-adaptive深度自适应)
   - [3.4 Predictive / Cache-then-Forecast（预测类）](#34-predictive--cache-then-forecast预测类)
-  - [3.5 Token-Level / Granularity（细粒度）](#35-token-level--granularity细粒度)
+  - [3.5 Fine-Grained / Granularity（token / region / channel）](#35-fine-grained--granularitytoken--region--channel)
   - [3.6 Frequency-Aware（频域类）](#36-frequency-aware频域类)
   - [3.7 CFG-Level Caching](#37-cfg-level-caching)
   - [3.8 Video DiT Cache（视频专用）](#38-video-dit-cache视频专用)
   - [3.9 Hybrid / Multi-Dimensional（混合类）](#39-hybrid--multi-dimensional混合类)
-  - [3.10 Inter-Request / Service-Level Cache（跨请求服务化）](#310-inter-request--service-level-cache跨请求服务化)
+  - [3.10 Service-Level Cache（跨请求 / 区域调度）](#310-service-level-cache跨请求--区域调度)
 - [4. 测评](#4-测评)
   - [4.1 常用评测指标](#41-常用评测指标)
   - [4.2 基线模型](#42-基线模型)
   - [4.3 常用 Benchmark](#43-常用-benchmark)
-- [5. 工程与工具](#5-工程与工具)
+- [5. 工程、系统与硬件](#5-工程系统与硬件)
 - [6. 相关综述](#6-相关综述)
 - [Star History](#star-history)
 - [License](#license)
@@ -155,8 +155,12 @@ Awesome-Dit-Cache
 | **MoECa** | 2026 | DiT-MoE | Hybrid (MoE 分支级复用) | — | [2606.15615](https://arxiv.org/abs/2606.15615) | - |
 | **LearniBridge** | ICML 2026 | FLUX / HunyuanVideo / Wan2.1 | Learnable calibration (LoRA bridge) | 5.87× / 5.75× / 4.10× | [2606.26778](https://arxiv.org/abs/2606.26778) | [Iiiiiiirene/LearniBridge](https://github.com/Iiiiiiirene/LearniBridge) |
 | **SyncCache** | ECCV 2026 | HunyuanVideo-Avatar / Wan-S2V | Video / modality-decoupled residual cache | 4.12× / 3.75× | [2606.30849](https://arxiv.org/abs/2606.30849) | - |
+| **ACID** | 2026 | HunyuanVideo / Wan2.1 / CogVideoX | Timestep-Adaptive (critical-step 双阈值 wrapper) | 最高 2.16× vs. no-cache；+38% vs. 保守固定阈值 | [2607.12358](https://arxiv.org/abs/2607.12358) | 未开源 |
+| **Kaleido** | 2026 | HunyuanVideo / Wan2.1 / CogVideoX / TurboDiffusion | Channel-wise partial-result reuse + hardware | 最高 **5.9×** vs. SOTA accelerator；16.0× energy saving（RTL 仿真） | [2607.13770](https://arxiv.org/abs/2607.13770) | 未开源 |
+| **FlashDiff** | 2026 | Image / Video / Audio Diffusion | Region × Timestep + Serving | Online RCT↓ 30–97% vs. SOTA engines / throughput 1.2–2.2× | [2607.12121](https://arxiv.org/abs/2607.12121) | 未开源 |
+| **CODA** | MICRO 2026 | Edge Video DiT | Compute-Cache Operator Disaggregation + CFG pipeline | 最高 1.80× / 1.74× energy efficiency vs. Vanilla-GPU（profiling + NMP 建模） | [2607.14908](https://arxiv.org/abs/2607.14908) | 未开源 |
 
-> 备注：加速比对应各自论文的最佳无损/近无损配置，数值来自原论文的 FLUX、SD3、PixArt、CogVideoX、Open-Sora 等主流 backbone。
+> 备注：算法类加速比对应各论文的最佳无损/近无损配置；FlashDiff 的 RCT 包含在线排队/调度收益；Kaleido 基于 16nm RTL / cycle-level 仿真，CODA 基于 RTX 4090 profiling + Ramulator / NMP RTL 建模，均非实芯片测量。这三类数字不能与单卡算法 latency 直接横比。`未开源`状态核验于 **2026-07-19**。
 
 ### 1.2 演化时间线
 
@@ -178,11 +182,13 @@ Awesome-Dit-Cache
 2026Q2  X-Cache / ScalingCache / FIS-DiT / SCOPE / E²-CRF           (跨 chunk block cache / 差分尺度 + 动态间隔 / 帧交错稀疏 / 三模 AR 调度 / 频域事件驱动)
 2026Q2  L2P-Cache / HSA / MotionCache / SoftCap                      (可学习线性预测 / 异构步预算 / 运动感知 AR cache / 软预算控制)
 2026Q2  MoECa / LearniBridge / SyncCache                             (MoE 分支级复用 / LoRA 轻量校准 / 音频驱动人像模态解耦 cache)
+2026Q3  ACID / Kaleido                                               (临界步双阈值 / 通道级局部结果复用 + 专用加速器)
+2026Q3  FlashDiff / CODA                                             (语义区域复用与服务调度 / compute-cache 解耦 + 近存计算)
 ```
 
-## 2. 按缓存粒度分类（What is cached）
+## 2. 按缓存 / 复用粒度分类（What is cached or reused）
 
-本节从 **"到底在缓存什么对象"** 的角度做一次正交切分，和 §3 的 "调度策略" 配合使用。每个方法通常在一个主要粒度上做文章，少数混合方法会跨多个粒度（见 §2.9 矩阵）。
+本节从 **"到底在缓存或复用什么对象"** 的角度做一次正交切分，和 §3 的 "调度策略" 配合使用。每个方法通常在一个主要粒度上做文章，少数混合方法会跨多个粒度（见 §2.9 矩阵）。
 
 ### 2.1 Step Cache（整步输出）
 
@@ -210,6 +216,7 @@ Awesome-Dit-Cache
 | **AdaCorrection** | 整步 cached activation | 检测 offset drift + 逐层逐步插值矫正 |
 | **RFC** | 整步 feature | 关系特征估计 + 关系调度触发 |
 | **ECAD** | 整步 feature | 进化搜索 Pareto-optimal cache schedule |
+| **ACID** | 基础方法已有的整步 residual / feature | 监测 drift signal 变化率，在 critical step 用低阈值、稳定步用高阈值 |
 
 ### 2.2 Block Cache（Transformer Block 输出）
 
@@ -232,7 +239,7 @@ Awesome-Dit-Cache
 | **TimeMask** | 每 timestep 学习 block-level mask，决定执行/跳过 |
 | **SODA** | 敏感度建模 + DP 跨层最优 cache 间隔 + 统一 pruning |
 | **PreciseCache** | LFCache (step-wise) + BlockCache (block-wise) 双层 |
-| **SyncCache** | 音频驱动人像 DiT 的 heavy DiT block residual | 复用稳定 inter-block residual，轻量 audio block 持续重算 |
+| **SyncCache** | 音频驱动人像 DiT 的 heavy DiT block residual；复用稳定 inter-block residual，轻量 audio block 持续重算 |
 
 ### 2.3 Attention Cache（注意力模块）
 
@@ -244,6 +251,7 @@ Awesome-Dit-Cache
 | **PAB** | self/cross/temporal attention 各自按类型广播 |
 | **FEB-Cache** (Attn 分支) | 后期阶段的 attention 输出（低频结构）|
 | **FasterCache** (attention 部分) | attention feature 跨步复用 |
+| **CODA** (cache path) | 复用跨时步 attention 输出；对应的读取 / 缩放 / 融合等 cache operator 合并后由 DIMM-NMP 执行 |
 
 ### 2.4 MLP / FFN Cache
 
@@ -253,10 +261,11 @@ Awesome-Dit-Cache
 |------|---------|
 | **FEB-Cache** (MLP 分支) | 早期阶段的 MLP 输出（高频细节）|
 | **FORA** (MLP 部分) | MLP 在固定区间内复用 |
+| **CODA** (cache path) | 复用跨时步 FFN 输出；对应的 memory-bound cache operator 与 xPU dense compute 解耦并流水重叠 |
 
-### 2.5 Token Cache（token 子集）
+### 2.5 Fine-Grained Cache（token / region / channel）
 
-**缓存对象**：每个 block 内一部分 token 的激活，激活态 / 静态 token 区分处理。
+**缓存对象**：不再把整步或整层视为同质单元，而是在 token、语义 region 或 channel / partial result 粒度选择性复用。
 
 | 方法 | 缓存什么 |
 |------|---------|
@@ -274,6 +283,8 @@ Awesome-Dit-Cache
 | **ToPi** | in-context reference token 敏感度剪枝 |
 | **TAP** | 每 token 自选最优预测器 (proxy loss 最小化) |
 | **MoECa** | DiT-MoE 的 expert branch 级 token 跨步复用 |
+| **FlashDiff** | 语义 latent patch 在稳定后跳步，直接复用相邻 timestep 的 prior state |
+| **Kaleido** | 相似邻接 token 的 channel 级 partial attention / GEMM 结果复用 |
 
 ### 2.6 Frequency-Band Cache（频带分解）
 
@@ -317,27 +328,28 @@ Awesome-Dit-Cache
 | **LearniBridge** | 用低秩 LoRA bridge 校准跨 timestep cache 误差 |
 | **SyncCache** | 模态解耦的 inter-block residual 复用 |
 
-### 2.9 缓存粒度 × 调度策略 交叉矩阵
+### 2.9 缓存 / 复用粒度 × 调度策略 交叉矩阵
 
-列 = §3 的调度策略；行 = §2 的缓存粒度。◆ = 主要归属，○ = 次要命中。
+列 = §3 的调度策略；行 = §2 的缓存 / 复用粒度。◆ = 主要归属，○ = 次要命中。
 
-| 粒度 \ 策略 | Static | Timestep-Adaptive | Layer-Adaptive | Predictive | Token-Level | Frequency-Aware | CFG | Hybrid |
+| 粒度 \ 策略 | Static | Timestep-Adaptive | Layer-Adaptive | Predictive | Fine-Grained | Frequency-Aware | CFG | Hybrid |
 |-------------|:---:|:---:|:---:|:---:|:---:|:---:|:---:|:---:|
-| **Step Cache**       | DeepCache / FORA / ECAD ◆ | TeaCache / FBCache / MagCache / EasyCache / ERTACache / ProCache / ScalingCache / SenCache / AdaCorrection / SoftCap ◆ | — | TaylorSeer / HiCache / AB-Cache / FoCa / SpeCa / DisCa / SVD-Cache / MeanCache / Spectrum / PrediT / LESA / RFC / L2P-Cache / LearniBridge ◆ | — | — | — | FasterCache ○ / Chorus (inter-req) ○ |
+| **Step Cache**       | DeepCache / FORA / ECAD ◆ | TeaCache / FBCache / MagCache / EasyCache / ERTACache / ProCache / ScalingCache / SenCache / AdaCorrection / SoftCap / ACID ◆ | — | TaylorSeer / HiCache / AB-Cache / FoCa / SpeCa / DisCa / SVD-Cache / MeanCache / Spectrum / PrediT / LESA / RFC / L2P-Cache / LearniBridge ◆ | — | — | — | FasterCache ○ / Chorus (inter-req) ○ |
 | **Block Cache**      | Δ-DiT ◆ | Cache Me if You Can / BlockDance / TimeMask ◆ | DBCache / Skip-DiT / HarmoniCa / ProfilingDiT / GoCache / DiffSparse / SODA / **LayerCache** ◆ | — | — | — | — | BWCache ○ / X-Cache (AR-chunk) ○ / PreciseCache ○ / SyncCache ○ |
-| **Attention Cache**  | T-GATE ◆ | — | — | — | — | FEB-Cache (Attn) ○ | — | PAB ◆ / FasterCache ○ |
-| **MLP Cache**        | FORA (MLP) ◆ | — | — | — | — | FEB-Cache (MLP) ◆ | — | — |
-| **Token Cache**      | — | Chipmunk ◆ | — | — | ToCa / DuCa / FastCache / ClusCa / HetCache / AccelAes / DiffSparse / FIS-DiT / HSA / JiT / ToPi / TAP ◆ | — | — | MoECa (MoE branch) ○ |
+| **Attention Cache**  | T-GATE ◆ | — | — | — | — | FEB-Cache (Attn) ○ | — | PAB ◆ / FasterCache ○ / CODA (system) ○ |
+| **MLP Cache**        | FORA (MLP) ◆ | — | — | — | — | FEB-Cache (MLP) ◆ | — | CODA (system) ○ |
+| **Fine-Grained**     | — | Chipmunk ◆ | — | — | ToCa / DuCa / FastCache / ClusCa / HetCache / AccelAes / DiffSparse / FIS-DiT / HSA / JiT / ToPi / TAP / FlashDiff (region) / Kaleido (channel, within-step reuse) ◆ | — | — | MoECa (MoE branch) ○ |
 | **Frequency Band**   | — | — | — | FreqCa (高频预测) ○ / Spectrum ○ | — | FreqCa / SeaCache / FEB-Cache / E²-CRF / **SpectralCache** ◆ | — | **SpectralCache** ○ |
 | **CFG Branch**       | — | — | — | — | — | FasterCache (CFG+freq) ○ | CFG-Cache ◆ | — |
 | **Residual**         | Δ-DiT ◆ | Chipmunk / ERTACache ○ | **LayerCache** (JVP) ◆ | AB-Cache / FoCa / HiCache / HyCa / GoCache / SVD-Cache / MeanCache / PrediT / L2P-Cache / LearniBridge ◆ | — | — | — | SyncCache ○ |
 
 > **怎么读这张表**：
-> - 横向看：一个调度策略下都有哪些缓存粒度的代表。
+> - 横向看：一个调度策略下都有哪些缓存 / 复用粒度的代表。
 > - 纵向看：同一粒度下不同调度思路的演化。
 > - **LayerCache** 同时命中 *Block / Residual* 粒度 + *Layer-Adaptive / Predictive* 策略（所以在 Hybrid 意义上是"层粒度 + 预测"）。
 > - **SpectralCache** 同时命中 *Frequency Band* 粒度 + *Frequency-Aware / Hybrid* 策略。
-> - **Inter-Request 维度**（跨请求的 cache 复用）独立于上面 8 列：**Chorus** 是该维度首作，专攻 4-step 蒸馏视频 DiT 服务化场景，详见 §3.10。
+> - **Kaleido** 是同一 timestep 内的 partial-result reuse（non-CTC），与传统 cross-timestep feature cache 互补。
+> - **Service-Level 维度**独立于上面 8 列：**Chorus** 做跨请求 feature 复用；**FlashDiff** 做请求内 region state 复用并把节省出的算力重排给并发请求，详见 §3.10。
 
 ## 3. 按调度策略详述（How to decide）
 
@@ -447,6 +459,10 @@ Awesome-Dit-Cache
 * **SoftCap** (2026-05)：
   * 论文：[arXiv 2605.27075](https://arxiv.org/abs/2605.27075)
   * 简介：给 cache-based DiT 推理加一层 **soft-budget control**。Trajectory Drift Observer 用轻量 hidden-state 统计估计局部 cache 风险，Soft-Budget PI Controller 根据实际 compute 与参考 profile 的偏差动态调整 full-step 触发阈值。FLUX.1-dev 上在接近相同 FLOPs 下优于 SpeCa，ImageReward 0.981、LPIPS-Full 0.498。
+
+* **ACID** (Adaptive Caching for vIDeo Generation, 2026-07)：
+  * 论文：[arXiv 2607.12358](https://arxiv.org/abs/2607.12358)
+  * 简介：指出 TeaCache / EasyCache / DiCache 的质量-速度折中很大程度来自**全轨迹固定阈值**。ACID 不替换原方法的 drift signal，而是监测信号的局部变化率：critical step 切到低阈值保质量，稳定区间切到高阈值激进缓存。它是 training-free、signal-agnostic 的 wrapper，无需改 backbone；在 HunyuanVideo + TeaCache 上相对无 cache 达 **2.16×**，比保守固定阈值再快 **38%**，同时 PSNR / SSIM / LPIPS 变化很小。
 
 ### 3.3 Layer-Adaptive（深度自适应）
 
@@ -569,9 +585,9 @@ Awesome-Dit-Cache
   * 论文：ICLR 2026 Poster
   * 简介：利用输入-输出**关系**增强特征预测：Relational Feature Estimation (RFE) 用输入特征估计输出变化幅度，Relational Cache Scheduling (RCS) 仅在预测误差大时触发全量计算。
 
-### 3.5 Token-Level / Granularity（细粒度）
+### 3.5 Fine-Grained / Granularity（token / region / channel）
 
-在 **token 维度**决定哪些 token 激活 / 哪些 token 用旧值。
+在 **token / region / channel** 维度决定哪些局部单元重算、复用旧状态或共享 partial result。
 
 * **ToCa (Token-wise Feature Caching)**：
   * 地址：https://github.com/Shenyi-Z/ToCa ![](https://img.shields.io/github/stars/Shenyi-Z/ToCa.svg)
@@ -623,6 +639,12 @@ Awesome-Dit-Cache
 * **MoECa** (2026-06)：
   * 论文：[arXiv 2606.15615](https://arxiv.org/abs/2606.15615)
   * 简介：面向 **DiT-MoE**（Mixture-of-Experts DiT）的细粒度缓存。在 expert branch 级做跨 timestep 特征复用，引入 expert-aware 自适应控制和 MoE / attention 路径同步缓存更新，保持中间状态稳定。
+
+* **Kaleido** (2026-07)：
+  * 论文：[arXiv 2607.13770](https://arxiv.org/abs/2607.13770)
+  * 简介：利用 RoPE 后 token channel 对时间 / 水平 / 垂直方向的结构化相关性，在线比较邻接 token；高相似 channel 完整复用前一个 token 的 partial attention / GEMM 结果，中等相似 channel 只补低位乘法。配套可重构 systolic-array PE 与 data dispatcher 处理不规则 reuse pattern。在 HunyuanVideo / Wan2.1 / CogVideoX / TurboDiffusion 上，16nm RTL / cycle-level 仿真相对现有专用加速器最高 **5.9×**，energy-saving ratio 最高 **16.0×**。这是**同一步内的局部结果复用**，不是传统 cross-timestep cache。
+
+* **FlashDiff** → 见 3.10（semantic region 跨 timestep 复用 prior state，并联动多请求调度）。
 
 ### 3.6 Frequency-Aware（频域类）
 
@@ -725,9 +747,14 @@ Awesome-Dit-Cache
   * 论文：[ECCV 2026 / arXiv 2606.30849](https://arxiv.org/abs/2606.30849)
   * 简介：面向 audio-driven portrait animation 的 training-free cache。利用音频驱动高频人脸区域与低频背景的非对称动态，做 **Spatially-Asymmetric Probing** 与 **Modality-Decoupled Caching**：heavy DiT block 的稳定 inter-block residual 复用，轻量 audio block 持续重算以保 lip sync。HunyuanVideo-Avatar 4.12×、Wan-S2V 3.75×。
 
+* **ACID** → 见 3.2（适配 HunyuanVideo / Wan2.1 / CogVideoX 的 critical-step 双阈值 wrapper）
+* **Kaleido** → 见 3.5（视频 DiT 的 channel-wise partial-result reuse + 专用硬件）
+* **FlashDiff** → 见 3.10（视频与图像/音频统一的 semantic region reuse + serving scheduler）
+* **CODA** → 见 3.9 / §5（边缘视频 DiT 的 compute-cache operator disaggregation）
+
 ### 3.9 Hybrid / Multi-Dimensional（混合类）
 
-组合多个轴（time × layer × frequency × CFG × token）的混合方法。
+组合多个轴（time × layer × frequency × CFG × token / region / channel × system）的混合方法。
 
 * **FasterCache**：
   * 地址：https://github.com/Vchitect/FasterCache ![](https://img.shields.io/github/stars/Vchitect/FasterCache.svg)
@@ -742,14 +769,23 @@ Awesome-Dit-Cache
 * **HSA** → 见 3.8（Token step budget + KV-cache synchronization）
 * **LearniBridge** → 见 3.4（Feature cache + low-rank LoRA calibration）
 * **SyncCache** → 见 3.8（Spatial + modality + residual cache）
+* **FlashDiff** → 见 3.10（Region × Timestep × Serving）
+* **Kaleido** → 见 3.5（Token × Channel × Hardware）
+* **CODA** (MICRO 2026)：
+  * 论文：[MICRO 2026 / arXiv 2607.14908](https://arxiv.org/abs/2607.14908)
+  * 简介：面向显存受限的 edge VDM，把 compute-intensive dense path 留在 xPU，把 memory-bound cross-timestep cache path 重组为 coarse-grained segment 并下沉到轻量 **DIMM-NMP**；再利用 CFG 两分支独立性，把一侧 cache DMA / NMP 与另一侧 dense compute 流水重叠。RTX 4090 profiling + Ramulator / NMP RTL 建模在 Latte / Open-Sora / Wan2.1 / HunyuanVideo / CogVideoX 等模型上给出最高 **1.80×** 端到端加速、**1.74×** 能效提升；这些是协同建模结果，并非 NMP 实芯片测量。
 
-### 3.10 Inter-Request / Service-Level Cache（跨请求服务化）
+### 3.10 Service-Level Cache（跨请求 / 区域调度）
 
-前面 §3.1–3.9 全部聚焦在**单次推理内部**做 cache。当模型已被 step distillation 压到 4 步、单请求 cache 已无空间可挤时，下一个加速维度只能是**跨请求**：在生产服务中复用历史请求的 latent 特征。
+服务层有两条正交路线：一条在**历史请求之间**直接复用 feature；另一条仍在单请求内做局部 cache，但把省下来的算力动态分配给并发请求。它们关注的不只是单样本 FLOPs，还包括端到端 latency、throughput、负载均衡与通信开销。
 
 * **Chorus** (2026-04)：
   * 论文：[arXiv 2604.04451](https://arxiv.org/abs/2604.04451)
-  * 简介：首次系统化研究 4-step 蒸馏视频 DiT 的服务化加速。提出**跨请求 cache 复用**：denoising 过程分三段——早期 full reuse、中段 region-specific cache、后段刷新；配套 **Token-Guided Attention Amplification** 维持 prompt 语义对齐。在工业级 4-step 模型上达 **45% 加速**（≈1.45×）。是当前唯一从"服务"而非"模型"角度切的 cache 工作。
+  * 简介：首次系统化研究 4-step 蒸馏视频 DiT 的**跨请求 cache 复用**：denoising 过程分三段——早期 full reuse、中段 region-specific cache、后段刷新；配套 **Token-Guided Attention Amplification** 维持 prompt 语义对齐。在工业级 4-step 模型上达 **45% 加速**（≈1.45×）。
+
+* **FlashDiff** (2026-07)：
+  * 论文：[arXiv 2607.12121](https://arxiv.org/abs/2607.12121)
+  * 简介：用 warm-up 阶段的 cross-attention 把 latent 切成语义一致的 image/video patch 或 audio segment，runtime controller 判断 region 是否已稳定；被跳过的 region 直接复用相邻 timestep 的 prior state。服务端再以 affinity-aware scheduler 把释放的 compute slack 分配给并发请求。覆盖 SD3 / FLUX / Wan2.1 / Stable Audio Open，减少 **24–66%** 计算，在线 request completion time（含排队/调度收益）降 **30–97%**、throughput 提升 **1.2–2.2×**。它不跨请求共享 feature，与 Chorus 的复用边界不同。
 
 ## 4. 测评
 
@@ -759,6 +795,10 @@ Awesome-Dit-Cache
 |------|------|------|
 | 加速 | **Speedup** | 相对无 cache 的 wall-clock 加速比 |
 | 加速 | **Latency / step** | 单步推理时延 |
+| 服务 | **Request Completion Time (RCT) ↓** | 含排队、调度与执行的请求完成时间 |
+| 服务 | **Throughput ↑** | 单位时间完成的请求数 |
+| 计算 | **FLOPs / Compute Reduction ↑** | 被 cache / reuse 消除的理论或实测计算量 |
+| 能效 | **Energy Saving / Efficiency ↑** | 基线能耗与方案能耗之比，或单位能量吞吐收益 |
 | 像素级 | **PSNR ↑** | 峰值信噪比（vs. 无 cache 输出）|
 | 结构级 | **SSIM ↑** | 结构相似度 |
 | 感知级 | **LPIPS ↓** | 感知距离（AlexNet/VGG）|
@@ -766,12 +806,15 @@ Awesome-Dit-Cache
 | 文图对齐 | **CLIP-Score ↑** | text-image 对齐 |
 | 视频时序 | **VBench** | 视频质量多维度评测 |
 | 视频时序 | **Temporal Flickering / Motion Smoothness** | 时序连贯性 |
+| 音频 | **FD / KL ↓, CLAP ↑** | 音频分布质量、多样性与文本-音频对齐 |
 
 ### 4.2 基线模型
 
 **图像**：SD 1.5 / SDXL / PixArt-α / PixArt-Σ / FLUX.1-dev / FLUX.1-schnell / SD3 / Qwen-Image / Z-Image / LongCat-Image / Lumina-Next / DiT-MoE
 
-**视频**：Open-Sora / Open-Sora-Plan / Latte / CogVideoX / HunyuanVideo / HunyuanVideo-Avatar / Wan2.1 / Wan2.2 / Wan-S2V / LTX-Video / LTX-2 / Mochi / Vchitect-2.0 / MAGI-1 / SkyReels-V2 / Cosmos-Predict2.5
+**视频**：Open-Sora / Open-Sora-Plan / Latte / CogVideoX / HunyuanVideo / HunyuanVideo-Avatar / Wan2.1 / Wan2.2 / Wan-S2V / LTX-Video / LTX-2 / Mochi / Vchitect-2.0 / TurboDiffusion / MAGI-1 / SkyReels-V2 / Cosmos-Predict2.5
+
+**音频**：Stable Audio Open
 
 ### 4.3 常用 Benchmark
 
@@ -783,16 +826,20 @@ Awesome-Dit-Cache
 | **DPG-Bench** | 长文图对齐 | [TencentQQGYLab/ELLA](https://github.com/TencentQQGYLab/ELLA) |
 | **VBench** | 视频生成 16 维度评测 | [Vchitect/VBench](https://github.com/Vchitect/VBench) |
 | **OneIG-Bench** | 统一图像生成评测 | - |
+| **AudioCaps** | 文生音频 FD / KL / CLAP 评测 | [audiocaps.github.io](https://audiocaps.github.io/) |
 
-## 5. 工程与工具
+## 5. 工程、系统与硬件
 
-| 工具 | 说明 |
-|------|------|
-| **xFuser / ParaAttention** | 并行 + cache 一体化框架，TeaCache / FBCache / SpectralCache 的集成入口 |
-| **VideoSys** | 视频 DiT 推理优化框架，PAB 官方实现载体 |
-| **Diffusers pipeline hooks** | 通过 hook 注入 cache 的通用模式 |
-| **vLLM-Omni Diffusion Cache** | vLLM 引入的 diffusion cache 工程化实现 |
-| **TensorRT-LLM / TensorRT** | cache + low-precision 联合部署 |
+| 工程 / 系统 / 硬件 | 类型 | 说明 |
+|--------------------|------|------|
+| **xFuser / ParaAttention** | 开源框架 | 并行 + cache 一体化框架，TeaCache / FBCache / SpectralCache 的集成入口 |
+| **VideoSys** | 开源框架 | 视频 DiT 推理优化框架，PAB 官方实现载体 |
+| **Diffusers pipeline hooks** | 接入机制 | 通过 hook 注入 cache 的通用模式 |
+| **vLLM-Omni Diffusion Cache** | 服务框架 | vLLM 引入的 diffusion cache 工程化实现 |
+| **TensorRT-LLM / TensorRT** | 部署框架 | cache + low-precision 联合部署 |
+| **[FlashDiff](https://arxiv.org/abs/2607.12121)** | 服务系统（未开源） | semantic patch execution + affinity-aware scheduler；把 region cache 节省转化为多请求 RCT / throughput 收益 |
+| **[Kaleido](https://arxiv.org/abs/2607.13770)** | 算法-硬件协同（未开源） | channel-wise partial-result reuse + 可重构 systolic-array PE / data dispatcher（16nm RTL / cycle-level 仿真）|
+| **[CODA](https://arxiv.org/abs/2607.14908)** | 算法-硬件协同（未开源） | xPU / DIMM-NMP compute-cache operator disaggregation + CFG-interleaved pipeline（profiling + NMP 建模）|
 
 ## 6. 相关综述
 
@@ -805,4 +852,4 @@ Awesome-Dit-Cache
 
 ## License
 
-Apache License 2.0
+[Apache License 2.0](LICENSE)
