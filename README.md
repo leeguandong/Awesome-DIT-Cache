@@ -22,7 +22,7 @@ Awesome-Dit-Cache
 
 **Why this repo / 为什么做这个仓库**
 
-过去两年里，Diffusion / DiT 推理加速领域的 Cache 类方法井喷式出现——从 2023 年 DeepCache 把"特征复用"第一次系统化，到 2025 年 TaylorSeer、HiCache、FoCa 把它升级成"数值积分式预测"，再到 2026 年的 Spectrum（Chebyshev 全局近似）、JiT（空间 ODE 稀疏，7×）、MeanCache（JVP 平均速度）、SenCache（敏感度驱动）、MoECa（MoE 分支级缓存）、LearniBridge（LoRA 校准）、SyncCache（音频驱动人像 cache），以及 Q3 新出现的 ACID（临界步双阈值）、Kaleido（通道级局部结果复用）、FlashDiff（区域级服务调度）、CODA（compute-cache 软硬协同）等，把预测基底、空间冗余、MoE 架构适配、轻量校准、模态异质性和系统协同等新维度一并拉入。方法演化已经跨越了 **"复用 → 调度 → 预测 → 多轴混合 → 架构/空间/频域/模态/系统自适应"** 五个阶段。但这个方向缺少一个**统一的中文索引**：论文分散在 CVPR / ICLR / ICCV / NeurIPS / ACM MM / arXiv，Video DiT 与 Image DiT 的工作被割裂收录，新老 baseline 对比困难。
+过去两年里，Diffusion / DiT 推理加速领域的 Cache 类方法井喷式出现——从 2023 年 DeepCache 把"特征复用"第一次系统化，到 2025 年 TaylorSeer、HiCache、FoCa 把它升级成"数值积分式预测"，再到 2026 年的 Spectrum（Chebyshev 全局近似）、JiT（空间 ODE 稀疏，7×）、MeanCache（JVP 平均速度）、SenCache（敏感度驱动）、MoECa（MoE 分支级缓存）、LearniBridge（LoRA 校准）、SyncCache（音频驱动人像 cache），以及 Q3 新出现的 ACID（临界步双阈值）、Kaleido（通道级局部结果复用）、FlashDiff（区域级服务调度）、CODA / DSTAR（compute-cache 与时空冗余的软硬协同）、DiTango（并行 attention state 复用）、OmniCache（四级分层复用）、FeatFix / RACER（把"验证"变成"校正"、用预测分歧度做闭环控制）、OnlineCache（policy-gradient 学调度）、EchoCache / WorldDynCache（音频跨模态与 world model）、HeadCast / EVO / CachedSearch（AR head 级 KV 通路、diffusion policy 进化调度、cache × test-time search）等，把预测基底、空间冗余、MoE 架构适配、轻量校准、模态异质性、误差闭环控制、系统协同与**算力预算分配**等新维度一并拉入。方法演化已经跨越了 **"复用 → 调度 → 预测 → 多轴混合 → 架构/空间/频域/模态/系统自适应 → 误差闭环与预算分配"** 六个阶段。但这个方向缺少一个**统一的中文索引**：论文分散在 CVPR / ICLR / ICCV / NeurIPS / ACM MM / arXiv，Video DiT 与 Image DiT 的工作被割裂收录，新老 baseline 对比困难。
 
 这个仓库就是为了填这个缺口：
 - **以"调度策略"为主轴**（Static → Timestep → Layer → Predictive → Fine-Grained → Frequency → CFG → Hybrid），把 2023–2026 的代表性方法一次性摆到同一张表里。
@@ -159,8 +159,19 @@ Awesome-Dit-Cache
 | **Kaleido** | 2026 | HunyuanVideo / Wan2.1 / CogVideoX / TurboDiffusion | Channel-wise partial-result reuse + hardware | 最高 **5.9×** vs. SOTA accelerator；16.0× energy saving（RTL 仿真） | [2607.13770](https://arxiv.org/abs/2607.13770) | 未开源 |
 | **FlashDiff** | 2026 | Image / Video / Audio Diffusion | Region × Timestep + Serving | Online RCT↓ 30–97% vs. SOTA engines / throughput 1.2–2.2× | [2607.12121](https://arxiv.org/abs/2607.12121) | 未开源 |
 | **CODA** | MICRO 2026 | Edge Video DiT | Compute-Cache Operator Disaggregation + CFG pipeline | 最高 1.80× / 1.74× energy efficiency vs. Vanilla-GPU（profiling + NMP 建模） | [2607.14908](https://arxiv.org/abs/2607.14908) | 未开源 |
+| **DSTAR** | MICRO 2026 | 7 类 DiT（图像 / 视频 / 编辑） | Sparse attention reuse + 差分激活混合精度 + 加速器 | 7.33× / 41.89× energy vs. A100；2.54× vs. SOTA accelerator | [2607.15846](https://arxiv.org/abs/2607.15846) | 未开源 |
+| **DiTango** | 2026 | 高分辨率 / 长时长 DiT（多机） | Context-Parallel × selective attention state reuse | 1.9× end-to-end / 3.2× attention（多节点近线性扩展） | [2607.15650](https://arxiv.org/abs/2607.15650) | 未开源 |
+| **HeadCast** | 2026 | AR 视频 DiT（流式长视频） | Attention-head 原型分类 + head-specific KV cache 通路 | 1.62× @720P / 1.95× @1080P | [2607.20125](https://arxiv.org/abs/2607.20125) | [sjlgaga/HeadCast](https://github.com/sjlgaga/HeadCast) |
+| **EVO** | PRCV 2026 | Diffusion Policy（视觉运动控制） | 进化搜索 block × timestep 全局 cache schedule | 8.05× action generation；FLOPs 15.77G→1.96G | [2607.20293](https://arxiv.org/abs/2607.20293) | [pillom/EVO](https://github.com/pillom/EVO) |
+| **CachedSearch** | 2026 | Wan / LTX / CogVideoX / Hunyuan（1.3B–14B） | Cache × test-time search（探索用 cache，胜者全算） | N=8 时以 63% 成本拿到 best-of-N 94.7% 收益；探索省 3.11× | [2607.23159](https://arxiv.org/abs/2607.23159) | - |
+| **OmniCache** | 2026 | SD3 / SVD-XT / Latte | Hybrid 多维分层（Token / Frame / Block / Layered） | latency ↓ 35% / 25% / 28% | [2607.23844](https://arxiv.org/abs/2607.23844) | - |
+| **FeatFix** | 2026 | 4 类图像 / 视频 backbone | Predictive 校正（verification 站点 exact-feature 复用） | 最高 6.70× vs. Vanilla | [2607.27842](https://arxiv.org/abs/2607.27842) | - |
+| **OnlineCache** | 2026 | FLUX.1-dev / DiT / CogVideoX | Timestep-Adaptive（policy-gradient 学习调度 + 误差矫正） | FLUX 近 3× | [2607.29398](https://arxiv.org/abs/2607.29398) | - |
+| **RACER** | 2026 | SD3.5-Large / FLUX.1-dev / Wan2.1-14B / HunyuanVideo | Predictive 闭环（双 forecast 分歧度 → 收缩 / 刷新） | 等 NFE 下全面优于最强 open-loop baseline；SD3.5 等质量更快 | [2608.01740](https://arxiv.org/abs/2608.01740) | [LiZaiyuan0619/RACER](https://github.com/LiZaiyuan0619/RACER) |
+| **WorldDynCache** | 2026 | HunyuanVoyager-13B / Aether-5B | Video world model 风险受控 latent dynamics 近似 | 4.92× / 2.15× | [2608.01845](https://arxiv.org/abs/2608.01845) | - |
+| **EchoCache** | ACM MM 2026 | Wan2.2-S2V 等 A2V 模型 | 跨模态（音频能量引导 latent cache + 量化 cache 管理） | Wan2.2-S2V 2.46× | [2608.02474](https://arxiv.org/abs/2608.02474) | [IF-LAB-PKU/EchoCache](https://github.com/IF-LAB-PKU/EchoCache) |
 
-> 备注：算法类加速比对应各论文的最佳无损/近无损配置；FlashDiff 的 RCT 包含在线排队/调度收益；Kaleido 基于 16nm RTL / cycle-level 仿真，CODA 基于 RTX 4090 profiling + Ramulator / NMP RTL 建模，均非实芯片测量。这三类数字不能与单卡算法 latency 直接横比。`未开源`状态核验于 **2026-07-19**。
+> 备注：算法类加速比对应各论文的最佳无损/近无损配置；FlashDiff 的 RCT 包含在线排队/调度收益；Kaleido 基于 16nm RTL / cycle-level 仿真，CODA 基于 RTX 4090 profiling + Ramulator / NMP RTL 建模，DSTAR 基于专用加速器实现与 A100 / SOTA accelerator 对比，均非实芯片测量；DiTango 的加速比来自多节点并行系统端到端测量。这几类数字不能与单卡算法 latency 直接横比。CachedSearch 的数字是 test-time search **预算-收益**口径，不是单次生成延迟。`未开源`状态核验于 **2026-07-19**；2026-07-15 之后新增条目的代码链接取自论文原文声明，**本次未能联网核验仓库可达性**。
 
 ### 1.2 演化时间线
 
@@ -183,7 +194,9 @@ Awesome-Dit-Cache
 2026Q2  L2P-Cache / HSA / MotionCache / SoftCap                      (可学习线性预测 / 异构步预算 / 运动感知 AR cache / 软预算控制)
 2026Q2  MoECa / LearniBridge / SyncCache                             (MoE 分支级复用 / LoRA 轻量校准 / 音频驱动人像模态解耦 cache)
 2026Q3  ACID / Kaleido                                               (临界步双阈值 / 通道级局部结果复用 + 专用加速器)
-2026Q3  FlashDiff / CODA                                             (语义区域复用与服务调度 / compute-cache 解耦 + 近存计算)
+2026Q3  FlashDiff / CODA / DSTAR / DiTango                           (语义区域复用与服务调度 / compute-cache 解耦 + 近存计算 / 时空冗余 + 加速器 / 并行 attention state 复用)
+2026Q3  OmniCache / FeatFix / RACER / OnlineCache                    (多维分层复用 / verify-then-correct / 分歧度闭环控制 / 学习式在线调度)
+2026Q3  EchoCache / WorldDynCache / HeadCast / EVO / CachedSearch    (音频能量跨模态 / world model 风险受控 / AR head 级 KV 通路 / diffusion policy 进化调度 / cache × test-time search)
 ```
 
 ## 2. 按缓存 / 复用粒度分类（What is cached or reused）
@@ -217,6 +230,11 @@ Awesome-Dit-Cache
 | **RFC** | 整步 feature | 关系特征估计 + 关系调度触发 |
 | **ECAD** | 整步 feature | 进化搜索 Pareto-optimal cache schedule |
 | **ACID** | 基础方法已有的整步 residual / feature | 监测 drift signal 变化率，在 critical step 用低阈值、稳定步用高阈值 |
+| **OnlineCache** | 整步 feature | policy-gradient 学到的动态调度策略 + 误差矫正器双层联合优化 |
+| **RACER** | 整步 feature 的两路 forecast | 用两路预测的分歧度作可靠性信号：不确定处向最近实算特征收缩，最危险步刷新并延后偿还 |
+| **WorldDynCache** | world model 的 latent 转移状态 | 风险估计器 + condition/phase-aware lifted latent surrogate 近似演化 |
+| **EchoCache** | 整步 latent（A2V） | 音频时频能量作 saliency anchor 引导 latent 更新 + 量化 cache 管理 |
+| **CachedSearch** | 已有 cache 方法的整步状态 | test-time search 中所有候选激进缓存探索，仅胜者全算重生成 |
 
 ### 2.2 Block Cache（Transformer Block 输出）
 
@@ -240,6 +258,9 @@ Awesome-Dit-Cache
 | **SODA** | 敏感度建模 + DP 跨层最优 cache 间隔 + 统一 pruning |
 | **PreciseCache** | LFCache (step-wise) + BlockCache (block-wise) 双层 |
 | **SyncCache** | 音频驱动人像 DiT 的 heavy DiT block residual；复用稳定 inter-block residual，轻量 audio block 持续重算 |
+| **FeatFix** | 固定稀疏 layer–timestep 站点上的**完整 block 精确输出**，用来整块替换 draft 输出（不做 token / channel 部分替换）|
+| **EVO** | diffusion policy 的 block × timestep 格点 cache 状态（进化搜索出的全局 schedule）|
+| **OmniCache** (Block / Layered) | block 输出 + 跨步的 model-layer 级冗余（Layered Cache）|
 
 ### 2.3 Attention Cache（注意力模块）
 
@@ -252,6 +273,9 @@ Awesome-Dit-Cache
 | **FEB-Cache** (Attn 分支) | 后期阶段的 attention 输出（低频结构）|
 | **FasterCache** (attention 部分) | attention feature 跨步复用 |
 | **CODA** (cache path) | 复用跨时步 attention 输出；对应的读取 / 缩放 / 融合等 cache operator 合并后由 DIMM-NMP 执行 |
+| **DSTAR** | 稀疏 attention 复用：只算变化显著的 attention 部分，其余复用旧结果（配差分激活混合精度量化）|
+| **DiTango** | Context-Parallel 下各 sequence partition 的 attention state；低贡献远端 partition 复用历史结果，高贡献近邻 partition 实算 |
+| **HeadCast** | AR 视频 DiT 的 **per-head KV cache**：按 Sink / Dummy / Spatial / Global 四类原型分通路管理，Global head 完整保留 |
 
 ### 2.4 MLP / FFN Cache
 
@@ -285,6 +309,7 @@ Awesome-Dit-Cache
 | **MoECa** | DiT-MoE 的 expert branch 级 token 跨步复用 |
 | **FlashDiff** | 语义 latent patch 在稳定后跳步，直接复用相邻 timestep 的 prior state |
 | **Kaleido** | 相似邻接 token 的 channel 级 partial attention / GEMM 结果复用 |
+| **OmniCache** (Token / Frame) | intra-frame 相似 token + inter-frame / motion 冗余帧特征，用相似度匹配挑可缓存项并按原位恢复 |
 
 ### 2.6 Frequency-Band Cache（频带分解）
 
@@ -327,6 +352,9 @@ Awesome-Dit-Cache
 | **L2P-Cache** | 历史特征轨迹的可学习线性组合残差 |
 | **LearniBridge** | 用低秩 LoRA bridge 校准跨 timestep cache 误差 |
 | **SyncCache** | 模态解耦的 inter-block residual 复用 |
+| **FeatFix** | 在 verification 站点把 draft 残差**归零重置**（用同一入态的精确输出替换），抑制下游误差 |
+| **RACER** | 对不确定的 forecast 残差做**收缩**（向最近实算特征插值），有确定性误差界 |
+| **WorldDynCache** | latent transition 的近似缺陷（approximation defect）作风险量，用 exact anchor 反事实校准 |
 
 ### 2.9 缓存 / 复用粒度 × 调度策略 交叉矩阵
 
@@ -334,22 +362,24 @@ Awesome-Dit-Cache
 
 | 粒度 \ 策略 | Static | Timestep-Adaptive | Layer-Adaptive | Predictive | Fine-Grained | Frequency-Aware | CFG | Hybrid |
 |-------------|:---:|:---:|:---:|:---:|:---:|:---:|:---:|:---:|
-| **Step Cache**       | DeepCache / FORA / ECAD ◆ | TeaCache / FBCache / MagCache / EasyCache / ERTACache / ProCache / ScalingCache / SenCache / AdaCorrection / SoftCap / ACID ◆ | — | TaylorSeer / HiCache / AB-Cache / FoCa / SpeCa / DisCa / SVD-Cache / MeanCache / Spectrum / PrediT / LESA / RFC / L2P-Cache / LearniBridge ◆ | — | — | — | FasterCache ○ / Chorus (inter-req) ○ |
-| **Block Cache**      | Δ-DiT ◆ | Cache Me if You Can / BlockDance / TimeMask ◆ | DBCache / Skip-DiT / HarmoniCa / ProfilingDiT / GoCache / DiffSparse / SODA / **LayerCache** ◆ | — | — | — | — | BWCache ○ / X-Cache (AR-chunk) ○ / PreciseCache ○ / SyncCache ○ |
-| **Attention Cache**  | T-GATE ◆ | — | — | — | — | FEB-Cache (Attn) ○ | — | PAB ◆ / FasterCache ○ / CODA (system) ○ |
+| **Step Cache**       | DeepCache / FORA / ECAD ◆ | TeaCache / FBCache / MagCache / EasyCache / ERTACache / ProCache / ScalingCache / SenCache / AdaCorrection / SoftCap / ACID / OnlineCache ◆ | — | TaylorSeer / HiCache / AB-Cache / FoCa / SpeCa / DisCa / SVD-Cache / MeanCache / Spectrum / PrediT / LESA / RFC / L2P-Cache / LearniBridge / FeatFix / RACER ◆ | — | — | — | FasterCache ○ / Chorus (inter-req) ○ / CachedSearch (test-time search) ○ / EchoCache (cross-modal) ○ / WorldDynCache ○ |
+| **Block Cache**      | Δ-DiT ◆ | Cache Me if You Can / BlockDance / TimeMask ◆ | DBCache / Skip-DiT / HarmoniCa / ProfilingDiT / GoCache / DiffSparse / SODA / EVO / **LayerCache** ◆ | FeatFix (block-level 精确校正) ○ | — | — | — | BWCache ○ / X-Cache (AR-chunk) ○ / PreciseCache ○ / SyncCache ○ / OmniCache ○ |
+| **Attention Cache**  | T-GATE ◆ | — | — | — | DSTAR (sparse attn reuse) ○ / DiTango (partition) ○ / HeadCast (per-head KV) ○ | FEB-Cache (Attn) ○ | — | PAB ◆ / FasterCache ○ / CODA (system) ○ / DSTAR (system) ◆ / DiTango (parallel system) ◆ |
 | **MLP Cache**        | FORA (MLP) ◆ | — | — | — | — | FEB-Cache (MLP) ◆ | — | CODA (system) ○ |
-| **Fine-Grained**     | — | Chipmunk ◆ | — | — | ToCa / DuCa / FastCache / ClusCa / HetCache / AccelAes / DiffSparse / FIS-DiT / HSA / JiT / ToPi / TAP / FlashDiff (region) / Kaleido (channel, within-step reuse) ◆ | — | — | MoECa (MoE branch) ○ |
+| **Fine-Grained**     | — | Chipmunk ◆ | — | — | ToCa / DuCa / FastCache / ClusCa / HetCache / AccelAes / DiffSparse / FIS-DiT / HSA / JiT / ToPi / TAP / FlashDiff (region) / Kaleido (channel, within-step reuse) / OmniCache (token+frame) ◆ | — | — | MoECa (MoE branch) ○ |
 | **Frequency Band**   | — | — | — | FreqCa (高频预测) ○ / Spectrum ○ | — | FreqCa / SeaCache / FEB-Cache / E²-CRF / **SpectralCache** ◆ | — | **SpectralCache** ○ |
 | **CFG Branch**       | — | — | — | — | — | FasterCache (CFG+freq) ○ | CFG-Cache ◆ | — |
-| **Residual**         | Δ-DiT ◆ | Chipmunk / ERTACache ○ | **LayerCache** (JVP) ◆ | AB-Cache / FoCa / HiCache / HyCa / GoCache / SVD-Cache / MeanCache / PrediT / L2P-Cache / LearniBridge ◆ | — | — | — | SyncCache ○ |
+| **Residual**         | Δ-DiT ◆ | Chipmunk / ERTACache ○ | **LayerCache** (JVP) ◆ | AB-Cache / FoCa / HiCache / HyCa / GoCache / SVD-Cache / MeanCache / PrediT / L2P-Cache / LearniBridge / FeatFix / RACER ◆ | — | — | — | SyncCache ○ / WorldDynCache ○ |
 
 > **怎么读这张表**：
 > - 横向看：一个调度策略下都有哪些缓存 / 复用粒度的代表。
 > - 纵向看：同一粒度下不同调度思路的演化。
 > - **LayerCache** 同时命中 *Block / Residual* 粒度 + *Layer-Adaptive / Predictive* 策略（所以在 Hybrid 意义上是"层粒度 + 预测"）。
 > - **SpectralCache** 同时命中 *Frequency Band* 粒度 + *Frequency-Aware / Hybrid* 策略。
-> - **Kaleido** 是同一 timestep 内的 partial-result reuse（non-CTC），与传统 cross-timestep feature cache 互补。
-> - **Service-Level 维度**独立于上面 8 列：**Chorus** 做跨请求 feature 复用；**FlashDiff** 做请求内 region state 复用并把节省出的算力重排给并发请求，详见 §3.10。
+> - **Kaleido** 是同一 timestep 内的 partial-result reuse（non-CTC），与传统 cross-timestep feature cache 互补。**DSTAR** 的 sparse attention reuse、**DiTango** 的 partition state reuse、**HeadCast** 的 per-head KV 通路同属"非纯 cross-timestep"的复用轴。
+> - **FeatFix / RACER** 都不新造预测器，而是改"预测结果怎么用"：FeatFix 在稀疏站点用精确输出整块重置 draft 残差，RACER 用双 forecast 的分歧度决定信任多少并在危险步刷新 —— 可视为预测类方法的**误差控制层**。
+> - **CachedSearch** 是唯一把 cache 用在 **test-time search 预算分配**上的工作：不追求单次生成更快，而是让"广探索 + 胜者全算"的总收益更高，与上面 8 列正交。
+> - **Service-Level 维度**独立于上面 8 列：**Chorus** 做跨请求 feature 复用；**FlashDiff** 做请求内 region state 复用并把节省出的算力重排给并发请求；**DiTango** 把复用决策与多机通信拓扑绑定，详见 §3.10。
 
 ## 3. 按调度策略详述（How to decide）
 
@@ -463,6 +493,10 @@ Awesome-Dit-Cache
 * **ACID** (Adaptive Caching for vIDeo Generation, 2026-07)：
   * 论文：[arXiv 2607.12358](https://arxiv.org/abs/2607.12358)
   * 简介：指出 TeaCache / EasyCache / DiCache 的质量-速度折中很大程度来自**全轨迹固定阈值**。ACID 不替换原方法的 drift signal，而是监测信号的局部变化率：critical step 切到低阈值保质量，稳定区间切到高阈值激进缓存。它是 training-free、signal-agnostic 的 wrapper，无需改 backbone；在 HunyuanVideo + TeaCache 上相对无 cache 达 **2.16×**，比保守固定阈值再快 **38%**，同时 PSNR / SSIM / LPIPS 变化很小。
+
+* **OnlineCache** (2026-07)：
+  * 论文：[arXiv 2607.29398](https://arxiv.org/abs/2607.29398)
+  * 简介：不再手调阈值，而是用 **policy gradient 学习一个动态 timestep 级缓存策略**，并配一个误差矫正器补偿缓存引入的偏差。两者在 **bilevel 优化**框架下联合训练：policy 以全局生成质量为目标，corrector 以局部误差最小化为目标，从而在样本与时步两个维度上自动分配算力。FLUX.1-dev 上近 **3×** 加速且保真度基本不掉，DiT / CogVideoX 上同样稳定优于既有 cache baseline。
 
 ### 3.3 Layer-Adaptive（深度自适应）
 
@@ -585,6 +619,15 @@ Awesome-Dit-Cache
   * 论文：ICLR 2026 Poster
   * 简介：利用输入-输出**关系**增强特征预测：Relational Feature Estimation (RFE) 用输入特征估计输出变化幅度，Relational Cache Scheduling (RCS) 仅在预测误差大时触发全量计算。
 
+* **FeatFix** (2026-07)：
+  * 论文：[arXiv 2607.27842](https://arxiv.org/abs/2607.27842)
+  * 简介：抓住既有预测类方法的一个"浪费"：SpeCa 这类方法为了控制 draft drift 会**实算一个精确 block 特征做验证**，但这个特征只被用来量误差或指导决策，随后就丢掉了。FeatFix 指出它可以直接用于**校正**——在验证站点把 draft block 输出整块替换成同一入态算出的精确输出，从而把局部 draft 残差归零、削减下游误差。刻意不做 token / channel 级部分替换，也不做整步重算，只在**固定稀疏的 layer–timestep 站点**生效。四个图像 / 视频 backbone 上最高 **6.70×**。
+
+* **RACER** (Disagree to Accelerate, 2026-08)：
+  * 地址：https://github.com/LiZaiyuan0619/RACER
+  * 论文：[arXiv 2608.01740](https://arxiv.org/abs/2608.01740)
+  * 简介：把问题从"怎么预测得更准"换成"**该信这个预测多少**"。核心观察：两路 forecast 在特征轨迹平滑处会一致、在难预测处会分歧，所以**分歧度本身就是免费的运行时可靠性信号**（不需要额外一次 denoiser 评估）。RACER 据此做两件事：把不确定的 forecast 向最近一次实算特征**收缩**（有确定性误差界），并在最危险的步**刷新**、再通过跳过后续一个已排定的实算来"偿还"这次开销 —— 因此是 closed-loop 而非 open-loop cache。等 NFE 下在 SD3.5-Large / FLUX.1-dev / Wan2.1-14B / HunyuanVideo（DrawBench / VBench / COCO）上全面优于最强 open-loop baseline；套在较弱的 Taylor 基底上也能把掉的质量捞回大半，说明它与具体 forecaster 设计解耦。
+
 ### 3.5 Fine-Grained / Granularity（token / region / channel）
 
 在 **token / region / channel** 维度决定哪些局部单元重算、复用旧状态或共享 partial result。
@@ -644,6 +687,17 @@ Awesome-Dit-Cache
   * 论文：[arXiv 2607.13770](https://arxiv.org/abs/2607.13770)
   * 简介：利用 RoPE 后 token channel 对时间 / 水平 / 垂直方向的结构化相关性，在线比较邻接 token；高相似 channel 完整复用前一个 token 的 partial attention / GEMM 结果，中等相似 channel 只补低位乘法。配套可重构 systolic-array PE 与 data dispatcher 处理不规则 reuse pattern。在 HunyuanVideo / Wan2.1 / CogVideoX / TurboDiffusion 上，16nm RTL / cycle-level 仿真相对现有专用加速器最高 **5.9×**，energy-saving ratio 最高 **16.0×**。这是**同一步内的局部结果复用**，不是传统 cross-timestep cache。
 
+* **OmniCache** (2026-07)：
+  * 论文：[arXiv 2607.23844](https://arxiv.org/abs/2607.23844)
+  * 简介：把冗余来源系统归成四类 —— **intra-frame、inter-frame、motion、denoising-step**，对应 Token Cache / Frame Cache / Block Cache / Layered Cache 四级统一分层框架。与 token-merging 系方法的关键差别是**不做特征平均**：用相似度匹配挑出可缓存项、跳过其计算，再把缓存激活**按原位置恢复**，保住特征顺序与时空结构；并让空间特征在时间层复用、时间特征在空间层复用。training-free，SD3 / SVD-XT / Latte 上 latency 分别降 35% / 25% / 28%。
+
+* **HeadCast** (2026-07)：
+  * 地址：https://github.com/sjlgaga/HeadCast
+  * 论文：[arXiv 2607.20125](https://arxiv.org/abs/2607.20125)
+  * 简介：面向 **AR 视频扩散**的 KV cache 侧优化。AR 长视频里 KV cache 持续增长、attention 成为主要开销，而已有 eviction 启发式太粗会导致帧间闪烁。HeadCast 发现预训练 AR 模型的 attention head 行为**稳定且异质**，于是在最大噪声步做一次性分类，把每个 head 归入 **Sink / Dummy / Spatial / Global** 四种原型，并把单块 KV cache 重构成 head-specific 通路 —— 关键是**保留 Global head**，因为激进 eviction 恰恰破坏的是它们承载的长程时序一致性。Spatial 通路跑在固定尺寸网格上，所以收益随分辨率上升：720P 1.62×、1080P 1.95×，VBench 与 full attention 相当且基本无闪烁。training-free、plug-and-play。
+
+* **DSTAR** → 见 §5（sparse attention reuse + 差分激活混合精度 + 专用加速器）。
+* **DiTango** → 见 3.10（Context-Parallel 下按通信拓扑决定 attention state 复用）。
 * **FlashDiff** → 见 3.10（semantic region 跨 timestep 复用 prior state，并联动多请求调度）。
 
 ### 3.6 Frequency-Aware（频域类）
@@ -747,10 +801,22 @@ Awesome-Dit-Cache
   * 论文：[ECCV 2026 / arXiv 2606.30849](https://arxiv.org/abs/2606.30849)
   * 简介：面向 audio-driven portrait animation 的 training-free cache。利用音频驱动高频人脸区域与低频背景的非对称动态，做 **Spatially-Asymmetric Probing** 与 **Modality-Decoupled Caching**：heavy DiT block 的稳定 inter-block residual 复用，轻量 audio block 持续重算以保 lip sync。HunyuanVideo-Avatar 4.12×、Wan-S2V 3.75×。
 
+* **WorldDynCache** (2026-08)：
+  * 论文：[arXiv 2608.01845](https://arxiv.org/abs/2608.01845)
+  * 简介：面向**扩散 world model**。指出既有 cache 的判据（局部 drift 或短程原生空间历史）会漏掉两件事：一是跨被跳过的步**累积**的 latent transition 近似缺陷，二是**相位 / 条件依赖**的 latent 演化方向变化。方案两件：轻量 **latent-transition 风险估计器**追踪近似缺陷的未来累积影响，并在 exact anchor 处用反事实缺陷校准自己的预测；condition- 与 phase-aware 的 **lifted latent surrogate** 在不额外跑 transformer 的前提下近似 latent 演化。HunyuanVoyager-13B **4.92×**、Aether-5B **2.15×**，且在 WorldScore / PSNR / SSIM / LPIPS 上是所比 cache 方法里质量最好的。与 §3.8 的 WorldCache 是同一战场的两种思路（motion-adaptive 阈值 vs. 风险受控 latent 动力学）。
+
+* **EchoCache** (ACM MM 2026)：
+  * 地址：https://github.com/IF-LAB-PKU/EchoCache
+  * 论文：[ACM MM 2026 / arXiv 2608.02474](https://arxiv.org/abs/2608.02474)
+  * 简介：面向 **audio-driven video generation (A2V)**。既有 cache 只挖视觉特征的时序冗余，忽略了 A2V 的跨模态特性 —— 音频驱动视觉、且其时间重要性高度非均匀。论文点出两层错配：**temporal-semantic** 与 **computation-storage**。EchoCache 用**音频时频能量**作 saliency anchor 引导 latent 级缓存更新，再加 dynamic timestep-latent 缓存机制与量化 cache 管理兼顾效率和显存。Wan2.2-S2V + EMTD 上 **2.46×** 且综合最优。与 SyncCache（音频驱动人像、模态解耦 residual）是同一模态、不同切入点。
+
+* **HeadCast** → 见 3.5（AR 视频 KV cache 的 head 级原型分通路，720P 1.62× / 1080P 1.95×）
+* **CachedSearch** → 见 3.9（视频 test-time search 中用 cache 换探索宽度）
 * **ACID** → 见 3.2（适配 HunyuanVideo / Wan2.1 / CogVideoX 的 critical-step 双阈值 wrapper）
 * **Kaleido** → 见 3.5（视频 DiT 的 channel-wise partial-result reuse + 专用硬件）
 * **FlashDiff** → 见 3.10（视频与图像/音频统一的 semantic region reuse + serving scheduler）
 * **CODA** → 见 3.9 / §5（边缘视频 DiT 的 compute-cache operator disaggregation）
+* **DSTAR** → 见 §5（覆盖图像 / 视频 / 编辑七类 DiT 的时空冗余削减 + 加速器）
 
 ### 3.9 Hybrid / Multi-Dimensional（混合类）
 
@@ -771,6 +837,18 @@ Awesome-Dit-Cache
 * **SyncCache** → 见 3.8（Spatial + modality + residual cache）
 * **FlashDiff** → 见 3.10（Region × Timestep × Serving）
 * **Kaleido** → 见 3.5（Token × Channel × Hardware）
+* **OmniCache** → 见 3.5（Token × Frame × Block × Layer 四级分层）
+* **EchoCache** → 见 3.8（Audio energy × Timestep × Latent，含量化 cache 管理）
+* **WorldDynCache** → 见 3.8（Risk × Phase/Condition × Latent surrogate）
+* **CachedSearch** (2026-07)：
+  * 论文：[arXiv 2607.23159](https://arxiv.org/abs/2607.23159)
+  * 简介：把 cache 用在一个此前没人碰的轴上 —— **test-time search 的预算分配**。动机：video test-time search 让小模型能追上大模型，但代价是 2–10× 算力，且所有候选都被完整去噪、绝大多数最后被丢弃。论文先做了第一份系统研究回答"**有损 cache 会不会破坏 verifier 的候选排序**"：Wan2.1-T2V-1.3B 上带 ~2× 自适应 cache 的 rollout 与全量 rollout，逐 prompt Spearman 秩相关中位数 **0.905**、VBench top-1 一致率 **72%**，且误差集中在本就接近平手的候选之间 —— 所以排序损坏是**自限的**。据此 CachedSearch 用激进 cache 探索全部候选，只把胜者以全算力重新生成一遍：N=8 时以 **63% 成本**拿到 best-of-N 的 **94.7%** 收益；等预算下可搜两倍宽度、多拿 38% 收益；配合中途剪枝，探索侧节省放大到 **3.11×**（保留 88.6% 收益）。在 Wan / LTX / CogVideoX / Hunyuan 四个家族、1.3B–14B 六个模型上成立，且 training-free、verifier-agnostic、与具体搜索算法正交。
+
+* **EVO** (Evolving Cache Schedules, PRCV 2026)：
+  * 地址：https://github.com/pillom/EVO
+  * 论文：[PRCV 2026 / arXiv 2607.20293](https://arxiv.org/abs/2607.20293)
+  * 简介：把 cache 带到 **diffusion policy（视觉运动控制）** 这个新场景 —— 这里的约束不是图像质量而是**闭环 rollout 成功率**，且实时性要求更硬。指出既有 training-free schedule 在各 block 上均匀分配算力，忽略 block 间冗余异质。EVO 把每个候选表示为 block–timestep 格点上的**完整 schedule**，用进化搜索做全局优化；为让搜索可行，引入 redundancy-aware 初始化播种优质个体、target-conditioned early stopping 达标即停。离线搜出的 schedule 可直接插到预训练 policy 上、无需重训。多个操作 benchmark 上 action generation 最高 **8.05×**，FLOPs 从 15.77G 降到 1.96G。思路上与 ECAD（图像 DiT 的进化 cache 搜索）同源，场景与目标函数不同。
+
 * **CODA** (MICRO 2026)：
   * 论文：[MICRO 2026 / arXiv 2607.14908](https://arxiv.org/abs/2607.14908)
   * 简介：面向显存受限的 edge VDM，把 compute-intensive dense path 留在 xPU，把 memory-bound cross-timestep cache path 重组为 coarse-grained segment 并下沉到轻量 **DIMM-NMP**；再利用 CFG 两分支独立性，把一侧 cache DMA / NMP 与另一侧 dense compute 流水重叠。RTX 4090 profiling + Ramulator / NMP RTL 建模在 Latte / Open-Sora / Wan2.1 / HunyuanVideo / CogVideoX 等模型上给出最高 **1.80×** 端到端加速、**1.74×** 能效提升；这些是协同建模结果，并非 NMP 实芯片测量。
@@ -786,6 +864,10 @@ Awesome-Dit-Cache
 * **FlashDiff** (2026-07)：
   * 论文：[arXiv 2607.12121](https://arxiv.org/abs/2607.12121)
   * 简介：用 warm-up 阶段的 cross-attention 把 latent 切成语义一致的 image/video patch 或 audio segment，runtime controller 判断 region 是否已稳定；被跳过的 region 直接复用相邻 timestep 的 prior state。服务端再以 affinity-aware scheduler 把释放的 compute slack 分配给并发请求。覆盖 SD3 / FLUX / Wan2.1 / Stable Audio Open，减少 **24–66%** 计算，在线 request completion time（含排队/调度收益）降 **30–97%**、throughput 提升 **1.2–2.2×**。它不跨请求共享 feature，与 Chorus 的复用边界不同。
+
+* **DiTango** (2026-07)：
+  * 论文：[arXiv 2607.15650](https://arxiv.org/abs/2607.15650)
+  * 简介：服务层的第三条路线 —— 把复用决策与**多机通信拓扑**绑定。并行推理（Context Parallelism）在多节点下的瓶颈是通信开销，而论文观察到 CP 的 sequence partition 存在明显异质：**空间上邻近的 partition 对 attention 结果贡献更大**。把这个异质模式映射到分层通信拓扑，就能以更低通信代价优先访问高贡献 partition。DiTango 据此提出 selective attention state 机制，在"部分 attention 实算"与"跨去噪步复用历史结果"之间做权衡：anchor-guided state selection planner 为每个 partition 定 compute-or-reuse 决策，配套 runtime 编排 state-centric 操作。多节点下 **1.9×** 端到端、**3.2×** attention 加速且近线性扩展，质量与 SOTA 相当。注意它的加速比是并行系统口径，不能与单卡算法 latency 直接横比。
 
 ## 4. 测评
 
@@ -840,6 +922,8 @@ Awesome-Dit-Cache
 | **[FlashDiff](https://arxiv.org/abs/2607.12121)** | 服务系统（未开源） | semantic patch execution + affinity-aware scheduler；把 region cache 节省转化为多请求 RCT / throughput 收益 |
 | **[Kaleido](https://arxiv.org/abs/2607.13770)** | 算法-硬件协同（未开源） | channel-wise partial-result reuse + 可重构 systolic-array PE / data dispatcher（16nm RTL / cycle-level 仿真）|
 | **[CODA](https://arxiv.org/abs/2607.14908)** | 算法-硬件协同（未开源） | xPU / DIMM-NMP compute-cache operator disaggregation + CFG-interleaved pipeline（profiling + NMP 建模）|
+| **[DSTAR](https://arxiv.org/abs/2607.15846)** | 算法-硬件协同（未开源，MICRO 2026） | 空间 + 时间冗余联合削减：差分激活细粒度混合精度量化 + sparse attention reuse + 专用加速器；7 类 DiT 上 vs. A100 最高 7.33× / 41.89× energy，vs. SOTA accelerator 2.54× / 3.68×，无精度损失 |
+| **[DiTango](https://arxiv.org/abs/2607.15650)** | 并行推理系统（未开源） | Context-Parallel × selective attention state reuse；anchor-guided planner + state-centric runtime，多节点 1.9× 端到端 / 3.2× attention，近线性扩展 |
 
 ## 6. 相关综述
 
