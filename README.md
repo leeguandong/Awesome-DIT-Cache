@@ -161,17 +161,17 @@ Awesome-Dit-Cache
 | **CODA** | MICRO 2026 | Edge Video DiT | Compute-Cache Operator Disaggregation + CFG pipeline | 最高 1.80× / 1.74× energy efficiency vs. Vanilla-GPU（profiling + NMP 建模） | [2607.14908](https://arxiv.org/abs/2607.14908) | 未开源 |
 | **DSTAR** | MICRO 2026 | 7 类 DiT（图像 / 视频 / 编辑） | Sparse attention reuse + 差分激活混合精度 + 加速器 | 7.33× / 41.89× energy vs. A100；2.54× vs. SOTA accelerator | [2607.15846](https://arxiv.org/abs/2607.15846) | 未开源 |
 | **DiTango** | 2026 | 高分辨率 / 长时长 DiT（多机） | Context-Parallel × selective attention state reuse | 1.9× end-to-end / 3.2× attention（多节点近线性扩展） | [2607.15650](https://arxiv.org/abs/2607.15650) | 未开源 |
-| **HeadCast** | 2026 | AR 视频 DiT（流式长视频） | Attention-head 原型分类 + head-specific KV cache 通路 | 1.62× @720P / 1.95× @1080P | [2607.20125](https://arxiv.org/abs/2607.20125) | [sjlgaga/HeadCast](https://github.com/sjlgaga/HeadCast) |
-| **EVO** | PRCV 2026 | Diffusion Policy（视觉运动控制） | 进化搜索 block × timestep 全局 cache schedule | 8.05× action generation；FLOPs 15.77G→1.96G | [2607.20293](https://arxiv.org/abs/2607.20293) | [pillom/EVO](https://github.com/pillom/EVO) |
+| **HeadCast** | 2026 | AR 视频 DiT（流式长视频） | Attention-head 原型分类 + head-specific KV cache 通路 | 1.62× @720P / 1.95× @1080P | [2607.20125](https://arxiv.org/abs/2607.20125) | [sjlgaga/HeadCast](https://github.com/sjlgaga/HeadCast) ![](https://img.shields.io/github/stars/sjlgaga/HeadCast.svg) |
+| **EVO** | PRCV 2026 | Diffusion Policy（视觉运动控制） | 进化搜索 block × timestep 全局 cache schedule | 8.05× action generation；FLOPs 15.77G→1.96G | [2607.20293](https://arxiv.org/abs/2607.20293) | [pillom/EVO](https://github.com/pillom/EVO) ![](https://img.shields.io/github/stars/pillom/EVO.svg) |
 | **CachedSearch** | 2026 | Wan / LTX / CogVideoX / Hunyuan（1.3B–14B） | Cache × test-time search（探索用 cache，胜者全算） | N=8 时以 63% 成本拿到 best-of-N 94.7% 收益；探索省 3.11× | [2607.23159](https://arxiv.org/abs/2607.23159) | - |
 | **OmniCache** | 2026 | SD3 / SVD-XT / Latte | Hybrid 多维分层（Token / Frame / Block / Layered） | latency ↓ 35% / 25% / 28% | [2607.23844](https://arxiv.org/abs/2607.23844) | - |
 | **FeatFix** | 2026 | 4 类图像 / 视频 backbone | Predictive 校正（verification 站点 exact-feature 复用） | 最高 6.70× vs. Vanilla | [2607.27842](https://arxiv.org/abs/2607.27842) | - |
 | **OnlineCache** | 2026 | FLUX.1-dev / DiT / CogVideoX | Timestep-Adaptive（policy-gradient 学习调度 + 误差矫正） | FLUX 近 3× | [2607.29398](https://arxiv.org/abs/2607.29398) | - |
-| **RACER** | 2026 | SD3.5-Large / FLUX.1-dev / Wan2.1-14B / HunyuanVideo | Predictive 闭环（双 forecast 分歧度 → 收缩 / 刷新） | 等 NFE 下全面优于最强 open-loop baseline；SD3.5 等质量更快 | [2608.01740](https://arxiv.org/abs/2608.01740) | [LiZaiyuan0619/RACER](https://github.com/LiZaiyuan0619/RACER) |
+| **RACER** | 2026 | SD3.5-Large / FLUX.1-dev / Wan2.1-14B / HunyuanVideo | Predictive 闭环（双 forecast 分歧度 → 收缩 / 刷新） | 等 NFE 下全面优于最强 open-loop baseline；SD3.5 等质量更快 | [2608.01740](https://arxiv.org/abs/2608.01740) | [LiZaiyuan0619/RACER](https://github.com/LiZaiyuan0619/RACER) ![](https://img.shields.io/github/stars/LiZaiyuan0619/RACER.svg) |
 | **WorldDynCache** | 2026 | HunyuanVoyager-13B / Aether-5B | Video world model 风险受控 latent dynamics 近似 | 4.92× / 2.15× | [2608.01845](https://arxiv.org/abs/2608.01845) | - |
-| **EchoCache** | ACM MM 2026 | Wan2.2-S2V 等 A2V 模型 | 跨模态（音频能量引导 latent cache + 量化 cache 管理） | Wan2.2-S2V 2.46× | [2608.02474](https://arxiv.org/abs/2608.02474) | [IF-LAB-PKU/EchoCache](https://github.com/IF-LAB-PKU/EchoCache) |
+| **EchoCache** | ACM MM 2026 | Wan2.2-S2V 等 A2V 模型 | 跨模态（音频能量引导 latent cache + 量化 cache 管理） | Wan2.2-S2V 2.46× | [2608.02474](https://arxiv.org/abs/2608.02474) | 论文声明 [IF-LAB-PKU/EchoCache](https://github.com/IF-LAB-PKU/EchoCache)（暂未公开）|
 
-> 备注：算法类加速比对应各论文的最佳无损/近无损配置；FlashDiff 的 RCT 包含在线排队/调度收益；Kaleido 基于 16nm RTL / cycle-level 仿真，CODA 基于 RTX 4090 profiling + Ramulator / NMP RTL 建模，DSTAR 基于专用加速器实现与 A100 / SOTA accelerator 对比，均非实芯片测量；DiTango 的加速比来自多节点并行系统端到端测量。这几类数字不能与单卡算法 latency 直接横比。CachedSearch 的数字是 test-time search **预算-收益**口径，不是单次生成延迟。`未开源`状态核验于 **2026-07-19**；2026-07-15 之后新增条目的代码链接取自论文原文声明，**本次未能联网核验仓库可达性**。
+> 备注：算法类加速比对应各论文的最佳无损/近无损配置；FlashDiff 的 RCT 包含在线排队/调度收益；Kaleido 基于 16nm RTL / cycle-level 仿真，CODA 基于 RTX 4090 profiling + Ramulator / NMP RTL 建模，DSTAR 基于专用加速器实现与 A100 / SOTA accelerator 对比，均非实芯片测量；DiTango 的加速比来自多节点并行系统端到端测量。这几类数字不能与单卡算法 latency 直接横比。CachedSearch 的数字是 test-time search **预算-收益**口径，不是单次生成延迟。`未开源`状态核验于 **2026-07-19**；2026Q3 新增条目的代码仓库核验于 **2026-08-08**（RACER / EVO / HeadCast 已公开，EchoCache 论文已声明地址但仓库尚未公开）。
 
 ### 1.2 演化时间线
 
@@ -624,7 +624,7 @@ Awesome-Dit-Cache
   * 简介：抓住既有预测类方法的一个"浪费"：SpeCa 这类方法为了控制 draft drift 会**实算一个精确 block 特征做验证**，但这个特征只被用来量误差或指导决策，随后就丢掉了。FeatFix 指出它可以直接用于**校正**——在验证站点把 draft block 输出整块替换成同一入态算出的精确输出，从而把局部 draft 残差归零、削减下游误差。刻意不做 token / channel 级部分替换，也不做整步重算，只在**固定稀疏的 layer–timestep 站点**生效。四个图像 / 视频 backbone 上最高 **6.70×**。
 
 * **RACER** (Disagree to Accelerate, 2026-08)：
-  * 地址：https://github.com/LiZaiyuan0619/RACER
+  * 地址：https://github.com/LiZaiyuan0619/RACER ![](https://img.shields.io/github/stars/LiZaiyuan0619/RACER.svg)
   * 论文：[arXiv 2608.01740](https://arxiv.org/abs/2608.01740)
   * 简介：把问题从"怎么预测得更准"换成"**该信这个预测多少**"。核心观察：两路 forecast 在特征轨迹平滑处会一致、在难预测处会分歧，所以**分歧度本身就是免费的运行时可靠性信号**（不需要额外一次 denoiser 评估）。RACER 据此做两件事：把不确定的 forecast 向最近一次实算特征**收缩**（有确定性误差界），并在最危险的步**刷新**、再通过跳过后续一个已排定的实算来"偿还"这次开销 —— 因此是 closed-loop 而非 open-loop cache。等 NFE 下在 SD3.5-Large / FLUX.1-dev / Wan2.1-14B / HunyuanVideo（DrawBench / VBench / COCO）上全面优于最强 open-loop baseline；套在较弱的 Taylor 基底上也能把掉的质量捞回大半，说明它与具体 forecaster 设计解耦。
 
@@ -692,7 +692,7 @@ Awesome-Dit-Cache
   * 简介：把冗余来源系统归成四类 —— **intra-frame、inter-frame、motion、denoising-step**，对应 Token Cache / Frame Cache / Block Cache / Layered Cache 四级统一分层框架。与 token-merging 系方法的关键差别是**不做特征平均**：用相似度匹配挑出可缓存项、跳过其计算，再把缓存激活**按原位置恢复**，保住特征顺序与时空结构；并让空间特征在时间层复用、时间特征在空间层复用。training-free，SD3 / SVD-XT / Latte 上 latency 分别降 35% / 25% / 28%。
 
 * **HeadCast** (2026-07)：
-  * 地址：https://github.com/sjlgaga/HeadCast
+  * 地址：https://github.com/sjlgaga/HeadCast ![](https://img.shields.io/github/stars/sjlgaga/HeadCast.svg)
   * 论文：[arXiv 2607.20125](https://arxiv.org/abs/2607.20125)
   * 简介：面向 **AR 视频扩散**的 KV cache 侧优化。AR 长视频里 KV cache 持续增长、attention 成为主要开销，而已有 eviction 启发式太粗会导致帧间闪烁。HeadCast 发现预训练 AR 模型的 attention head 行为**稳定且异质**，于是在最大噪声步做一次性分类，把每个 head 归入 **Sink / Dummy / Spatial / Global** 四种原型，并把单块 KV cache 重构成 head-specific 通路 —— 关键是**保留 Global head**，因为激进 eviction 恰恰破坏的是它们承载的长程时序一致性。Spatial 通路跑在固定尺寸网格上，所以收益随分辨率上升：720P 1.62×、1080P 1.95×，VBench 与 full attention 相当且基本无闪烁。training-free、plug-and-play。
 
@@ -806,7 +806,7 @@ Awesome-Dit-Cache
   * 简介：面向**扩散 world model**。指出既有 cache 的判据（局部 drift 或短程原生空间历史）会漏掉两件事：一是跨被跳过的步**累积**的 latent transition 近似缺陷，二是**相位 / 条件依赖**的 latent 演化方向变化。方案两件：轻量 **latent-transition 风险估计器**追踪近似缺陷的未来累积影响，并在 exact anchor 处用反事实缺陷校准自己的预测；condition- 与 phase-aware 的 **lifted latent surrogate** 在不额外跑 transformer 的前提下近似 latent 演化。HunyuanVoyager-13B **4.92×**、Aether-5B **2.15×**，且在 WorldScore / PSNR / SSIM / LPIPS 上是所比 cache 方法里质量最好的。与 §3.8 的 WorldCache 是同一战场的两种思路（motion-adaptive 阈值 vs. 风险受控 latent 动力学）。
 
 * **EchoCache** (ACM MM 2026)：
-  * 地址：https://github.com/IF-LAB-PKU/EchoCache
+  * 地址：论文声明 https://github.com/IF-LAB-PKU/EchoCache（核验于 2026-08-08 仍未公开）
   * 论文：[ACM MM 2026 / arXiv 2608.02474](https://arxiv.org/abs/2608.02474)
   * 简介：面向 **audio-driven video generation (A2V)**。既有 cache 只挖视觉特征的时序冗余，忽略了 A2V 的跨模态特性 —— 音频驱动视觉、且其时间重要性高度非均匀。论文点出两层错配：**temporal-semantic** 与 **computation-storage**。EchoCache 用**音频时频能量**作 saliency anchor 引导 latent 级缓存更新，再加 dynamic timestep-latent 缓存机制与量化 cache 管理兼顾效率和显存。Wan2.2-S2V + EMTD 上 **2.46×** 且综合最优。与 SyncCache（音频驱动人像、模态解耦 residual）是同一模态、不同切入点。
 
@@ -845,7 +845,7 @@ Awesome-Dit-Cache
   * 简介：把 cache 用在一个此前没人碰的轴上 —— **test-time search 的预算分配**。动机：video test-time search 让小模型能追上大模型，但代价是 2–10× 算力，且所有候选都被完整去噪、绝大多数最后被丢弃。论文先做了第一份系统研究回答"**有损 cache 会不会破坏 verifier 的候选排序**"：Wan2.1-T2V-1.3B 上带 ~2× 自适应 cache 的 rollout 与全量 rollout，逐 prompt Spearman 秩相关中位数 **0.905**、VBench top-1 一致率 **72%**，且误差集中在本就接近平手的候选之间 —— 所以排序损坏是**自限的**。据此 CachedSearch 用激进 cache 探索全部候选，只把胜者以全算力重新生成一遍：N=8 时以 **63% 成本**拿到 best-of-N 的 **94.7%** 收益；等预算下可搜两倍宽度、多拿 38% 收益；配合中途剪枝，探索侧节省放大到 **3.11×**（保留 88.6% 收益）。在 Wan / LTX / CogVideoX / Hunyuan 四个家族、1.3B–14B 六个模型上成立，且 training-free、verifier-agnostic、与具体搜索算法正交。
 
 * **EVO** (Evolving Cache Schedules, PRCV 2026)：
-  * 地址：https://github.com/pillom/EVO
+  * 地址：https://github.com/pillom/EVO ![](https://img.shields.io/github/stars/pillom/EVO.svg)
   * 论文：[PRCV 2026 / arXiv 2607.20293](https://arxiv.org/abs/2607.20293)
   * 简介：把 cache 带到 **diffusion policy（视觉运动控制）** 这个新场景 —— 这里的约束不是图像质量而是**闭环 rollout 成功率**，且实时性要求更硬。指出既有 training-free schedule 在各 block 上均匀分配算力，忽略 block 间冗余异质。EVO 把每个候选表示为 block–timestep 格点上的**完整 schedule**，用进化搜索做全局优化；为让搜索可行，引入 redundancy-aware 初始化播种优质个体、target-conditioned early stopping 达标即停。离线搜出的 schedule 可直接插到预训练 policy 上、无需重训。多个操作 benchmark 上 action generation 最高 **8.05×**，FLOPs 从 15.77G 降到 1.96G。思路上与 ECAD（图像 DiT 的进化 cache 搜索）同源，场景与目标函数不同。
 
